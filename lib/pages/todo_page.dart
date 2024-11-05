@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
 
 import '../model/todo_model.dart';
 import '../repositories/todo_repositories.dart';
@@ -23,10 +24,22 @@ class _TodoPageState extends State<TodoPage> {
 
   var descriptionController = TextEditingController();
   bool justNotCompleted = true;
+  late DateTime today;
+  late DateTime todayDate;
+  String formattedDate = '';
+
+
+  
+
 
   @override
   void initState() {
     super.initState();
+    today = DateTime.now();
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+    formattedDate = dateFormat.format(today);
+    print(formattedDate);
+    
     getTasks();
   }
 
@@ -42,7 +55,22 @@ class _TodoPageState extends State<TodoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("ToDo")),
+      appBar: AppBar(
+        title: Center(child: Text(formattedDate)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: () {
+              showDatePicker(
+                context: context, 
+                initialDate: today, 
+                firstDate: today, 
+                lastDate: DateTime(2100)
+              );
+            }, 
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
 
