@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, prefer_conditional_assignment
+
 import 'package:hive/hive.dart';
 import 'package:todo_list/model/todo_model.dart';
 
@@ -6,8 +8,10 @@ class TodoRepository {
   static late Box _box;
 
   TodoRepository._create();
+  
 
   static Future<TodoRepository> loadData() async {
+    // await Hive.deleteBoxFromDisk('todoModel');
     if(Hive.isBoxOpen('todoModel')){
       _box = Hive.box('todoModel');
     }
@@ -17,14 +21,17 @@ class TodoRepository {
     return TodoRepository._create();
   } 
 
-  List<ToDoModel> get(bool justNotCompleted){
+  List<ToDoModel> get(bool justNotCompleted, DateTime date){
+
     if(justNotCompleted){
       return _box.values.cast<ToDoModel>().where(
-        (element) => !element.completed
+        (element) => !element.completed && element.date == date
       ).toList();
     }
     else{
-      return _box.values.cast<ToDoModel>().toList();
+      return _box.values.cast<ToDoModel>().where(
+        (element) => element.date == date
+      ).toList();
     }
   }
 
