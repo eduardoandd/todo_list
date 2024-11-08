@@ -22,15 +22,17 @@ class TodoRepository {
   } 
 
   List<ToDoModel> get(bool justNotCompleted, DateTime date){
+    DateTime normalizedDate = DateTime(date.year, date.month, date.day);
 
     if(justNotCompleted){
       return _box.values.cast<ToDoModel>().where(
-        (element) => !element.completed && element.date == date
+        (element) => !element.completed && 
+         DateTime(element.date.year, element.date.month, element.date.day) == normalizedDate,
       ).toList();
     }
     else{
       return _box.values.cast<ToDoModel>().where(
-        (element) => element.date == date
+        (element) => DateTime(element.date.year, element.date.month, element.date.day) == normalizedDate,
       ).toList();
     }
   }
