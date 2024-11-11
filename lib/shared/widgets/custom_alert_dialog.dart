@@ -15,6 +15,7 @@ class CustomAlertDialog extends StatelessWidget {
   final String timeNotification;
   final String timeTask;
   final bool visible;
+  final bool borderIsVisible;
 
   CustomAlertDialog({
     required this.controller,
@@ -27,7 +28,8 @@ class CustomAlertDialog extends StatelessWidget {
     required this.onIconPressed2,
     required this.timeNotification,
     required this.timeTask,
-    required this.visible
+    required this.visible,
+    required this.borderIsVisible
   });
 
   @override
@@ -54,23 +56,32 @@ class CustomAlertDialog extends StatelessWidget {
           TextField(
             controller: controller,
           ),
-          SizedBox(height: 20,),
+          SizedBox(height: 10,),
           Row(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
+                margin: EdgeInsets.only(right: 20),
+                padding: EdgeInsets.symmetric(vertical: 8),
+                decoration: borderIsVisible ? BoxDecoration(
                   color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(25),
                   border: Border.all(color: Colors.grey[400]!, width: 1),
-                ),
+                )
+                :
+                BoxDecoration(
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(color: Color.fromARGB(255, 255, 255, 255)!, width: 1),
+                )
+
+                ,
                 child: Row(
                   children: [
                     IconButton(
                       onPressed: onIconPressed2,
                       icon: Icon(icon2)
                     ),
-                    // Icon(Icons.access_time, color: Colors.grey[600],),
+                    
                     SizedBox(width: 8),
                     Text(
                       timeTask,
@@ -78,10 +89,10 @@ class CustomAlertDialog extends StatelessWidget {
                     ),
                     SizedBox(width: 8),
                     
-                    Visibility(
-                      visible:  visible,
-                      child: Icon(Icons.close, color: Colors.red[600], size: 20,)
-                    ),
+                    // Visibility(
+                    //   visible:  visible,
+                    //   child: Icon(Icons.close, color: Colors.red[600], size: 20,)
+                    // ),
                     
 
                   ],
@@ -100,6 +111,7 @@ class CustomAlertDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
+            
             Navigator.pop(context);
           }, 
           child: Text('Cancelar')

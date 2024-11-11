@@ -19,15 +19,16 @@ class _TodoPageState extends State<TodoPage> {
   late TodoRepository todoRepository;
   var _tasks = <ToDoModel>[];
   var descriptionController = TextEditingController();
-  bool justNotCompleted = true;
+  bool justNotCompleted = false;
   DateTime pickDate = DateTime.now(); // Inicia com a data atual
   DateFormat dateFormat = DateFormat('dd/MM/yyyy');
-  bool _initialized = false; 
+  bool _initialized = false;
   bool notification = false;
   DateTime? notificationTime;
   bool taskTime = false;
   DateTime? taskHour;
   bool watchIcon = false;
+  bool borderIsVisible = false;
 
   PageController _pageController = PageController(initialPage: 1);
 
@@ -35,7 +36,7 @@ class _TodoPageState extends State<TodoPage> {
   void initState() {
     super.initState();
     getTasks();
-    _initialized = true; 
+    _initialized = true;
   }
 
   void getTasks() async {
@@ -52,19 +53,18 @@ class _TodoPageState extends State<TodoPage> {
   }
 
   String formatTimeOfNotification(DateTime? time) {
-    if (time == null) return "Notificação"; // Retorna uma string vazia caso o timeNotification seja nulo
+    if (time == null) return "Notificação";
     final hours = time.hour.toString().padLeft(2, '0');
     final minutes = time.minute.toString().padLeft(2, '0');
     return '$hours:$minutes';
   }
 
   String formatTimeOfTask(DateTime? time) {
-    if (time == null) return ""; // Retorna uma string vazia caso o timeNotification seja nulo
+    if (time == null) return "";
     final hours = time.hour.toString().padLeft(2, '0');
     final minutes = time.minute.toString().padLeft(2, '0');
     return '$hours:$minutes';
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -103,101 +103,112 @@ class _TodoPageState extends State<TodoPage> {
           notification = false;
           taskTime = false;
           taskHour = null;
+          watchIcon = false;
+          borderIsVisible = false;
           showDialog(
             context: context,
             builder: (BuildContext bc) {
               return StatefulBuilder(
                 builder: (context, setState) {
                   return CustomAlertDialog(
-                  title: "Adicionar tarefa",
-                  controller: descriptionController,
-                  icon: notification ? 
-                  Icons.notifications : 
-                  Icons.notifications_off,
+                    title: "Adicionar tarefa",
+                    controller: descriptionController,
+                    icon: notification
+                        ? Icons.notifications
+                        : Icons.notifications_off,
+                    onIconPressed: () async {
+                      setState(() {
+                        notification = !notification;
+                      });
+                      if (notification) {
+                        final pickedTime = await showTimePicker(
+                            context: context, initialTime: TimeOfDay.now());
 
-                  onIconPressed: () async {
-                    setState(() {
-                      notification = !notification;
-                    });
-                    if (notification){
-                      final pickedTime = await showTimePicker(
-                        context: context, 
-                        initialTime: TimeOfDay.now()
-                      );
-
-                      if (pickedTime !=null) {
-                        setState(() {
-                          notificationTime = DateTime(
-                            pickDate.year,
-                            pickDate.month,
-                            pickDate.day,
-                            pickedTime.hour,
-                            pickedTime.minute,
-                          );
-                        });
+                        if (pickedTime != null) {
+                          setState(() {
+                            notificationTime = DateTime(
+                              pickDate.year,
+                              pickDate.month,
+                              pickDate.day,
+                              pickedTime.hour,
+                              pickedTime.minute,
+                            );
+                          });
+                        }
                       }
-                    }
-                  },
-                  timeNotification: formatTimeOfNotification(notificationTime),
-
-                  icon2: taskTime ?  
-                  Icons.access_time_filled:
-                  Icons.access_time ,
-                  onIconPressed2: () async{
-                    setState (() {
-                      taskTime = !taskTime;
-                      watchIcon = !watchIcon;
-                    });
-                    if (taskTime){
-                      final pickedTaskTime = await showTimePicker(
-                          context: context, 
-                          initialTime: TimeOfDay.now()
-                      );
-                      if (pickedTaskTime != null){
-                        setState((){
-                          taskHour = DateTime(
-                            pickDate.year,
-                            pickDate.month,
-                            pickDate.day,
-                            pickedTaskTime.hour,
-                            pickedTaskTime.minute,
-                          );
-                        });
+                      else{
+                        notificationTime = null;
+                        borderIsVisible = false;
                       }
-                    }
-                  },
-                  timeTask: formatTimeOfTask(taskHour),
-                  visible:  watchIcon ? true : false,
-                  onConfirm: () async {
+                    },
+                    timeNotification:
+                        formatTimeOfNotification(notificationTime),
+                    icon2:
+                        taskTime ? Icons.alarm : Icons.alarm_off,
+                    onIconPressed2: () async {
+                      setState(() {
+                        taskTime = !taskTime;
+                        borderIsVisible = !borderIsVisible;
+                      });
+                      if (taskTime) {
+                        final pickedTaskTime = await showTimePicker(
+                            context: context, initialTime: TimeOfDay.now());
+                        if (pickedTaskTime != null) {
+                          setState(() {
+                            taskHour = DateTime(
+                              pickDate.year,
+                              pickDate.month,
+                              pickDate.day,
+                              pickedTaskTime.hour,
+                              pickedTaskTime.minute,
+                            );
+                          });
+                        }
+                      }
+                      else{
+                        taskHour = null;
+                        borderIsVisible = false;
+                        // setState((){});
+                      }
+                    },
+                    timeTask: formatTimeOfTask(taskHour),
+                    visible: watchIcon ? true : false,
+                    borderIsVisible: borderIsVisible,
+                    onConfirm: () async {
                       await todoRepository.saveData(
-                        ToDoModel.create(descriptionController.text, false, pickDate,notification,notificationTime, taskTime, taskHour),
+                        ToDoModel.create(
+                            descriptionController.text,
+                            false,
+                            pickDate,
+                            notification,
+                            notificationTime,
+                            taskTime,
+                            taskHour),
                       );
                       getTasks();
-                  },
-                  confirmText: "Salvar",
-            );
-          },
-        );
-      },
-    );
-  },
-),
-
+                    },
+                    confirmText: "Salvar",
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
           if (_initialized) {
             if (index == 0) {
-              updateDate(false); 
+              updateDate(false);
             } else if (index == 2) {
-              updateDate(true); 
+              updateDate(true);
             }
-            _pageController.jumpToPage(1); 
+            _pageController.jumpToPage(1);
           }
         },
         children: [
           Center(child: Text("Dia anterior")),
-           
           Container(
             margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Column(
@@ -247,7 +258,12 @@ class _TodoPageState extends State<TodoPage> {
                             value: task.completed,
                           ),
                           onLongPress: () {
-                            descriptionController.text = task.description.toString();
+                            descriptionController.text =
+                                task.description.toString();
+                            notification = task.notify;
+                            notificationTime = task.notificationTime;
+                            taskTime = task.TaskTime;
+                            taskHour = task.taskHour;
                             showDialog(
                               context: context,
                               builder: (BuildContext bc) {
@@ -256,22 +272,23 @@ class _TodoPageState extends State<TodoPage> {
                                     return CustomAlertDialog(
                                       title: "Editar tarefa",
                                       controller: descriptionController,
-                                      icon: notification ? 
-                                      Icons.notifications : 
-                                      Icons.notifications_off,
-
+                                      icon: notification
+                                          ? Icons.notifications
+                                          : Icons.notifications_off,
                                       onIconPressed: () async {
                                         setState(() {
                                           notification = !notification;
+
+                                          
                                         });
 
-                                        if (notification){
-                                          final pickedTime = await showTimePicker(
-                                            context: context, 
-                                            initialTime: TimeOfDay.now()
-                                          );
+                                        if (notification) {
+                                          final pickedTime =
+                                              await showTimePicker(
+                                                  context: context,
+                                                  initialTime: TimeOfDay.now());
 
-                                          if (pickedTime !=null) {
+                                          if (pickedTime != null) {
                                             setState(() {
                                               notificationTime = DateTime(
                                                 pickDate.year,
@@ -283,24 +300,31 @@ class _TodoPageState extends State<TodoPage> {
                                             });
                                           }
                                         }
+                                        else{
+                                          notificationTime = null;
+                                          setState((){});
+                                        }
+                                        task.notificationTime = notificationTime;
+                                        setState((){});
                                       },
-                                      timeNotification: formatTimeOfNotification(notificationTime),
-
-                                      icon2: taskTime ?  
-                                      Icons.access_time : 
-                                      Icons.access_time_filled,
-                                      onIconPressed2: () async{
-                                        setState (() {
+                                      timeNotification:
+                                          formatTimeOfNotification(
+                                              notificationTime),
+                                      icon2:
+                                          taskTime ? Icons.alarm : Icons.alarm_off,
+                                      onIconPressed2: () async {
+                                        setState(() {
                                           taskTime = !taskTime;
-                                          watchIcon = !watchIcon;
+                                          borderIsVisible = !borderIsVisible;
+                                          
                                         });
-                                        if (taskTime){
-                                          final pickedTaskTime = await showTimePicker(
-                                              context: context, 
-                                              initialTime: TimeOfDay.now()
-                                          );
-                                          if (pickedTaskTime != null){
-                                            setState((){
+                                        if (taskTime) {
+                                          final pickedTaskTime =
+                                              await showTimePicker(
+                                                  context: context,
+                                                  initialTime: TimeOfDay.now());
+                                          if (pickedTaskTime != null) {
+                                            setState(() {
                                               taskHour = DateTime(
                                                 pickDate.year,
                                                 pickDate.month,
@@ -309,16 +333,24 @@ class _TodoPageState extends State<TodoPage> {
                                                 pickedTaskTime.minute,
                                               );
                                             });
+
+                                            
                                           }
                                         }
+                                        else{
+                                          taskHour = null;
+                                          borderIsVisible = false;
+                                          setState((){});
+                                        }
+                                        task.taskHour = taskHour;
+                                        setState((){});
                                       },
                                       timeTask: formatTimeOfTask(taskHour),
-                                      visible:  watchIcon ? true : false,
-
+                                      visible: task.taskHour != null ? true : false,
+                                      borderIsVisible: borderIsVisible,
                                       onConfirm: () async {
-                                        await todoRepository.saveData(
-                                          ToDoModel.create(descriptionController.text, false, pickDate,notification,notificationTime, taskTime, taskHour),
-                                        );
+                                        task.description = descriptionController.text;
+                                        await todoRepository.update(task);
                                         getTasks();
                                       },
                                       confirmText: "Salvar",
@@ -336,7 +368,7 @@ class _TodoPageState extends State<TodoPage> {
               ],
             ),
           ),
-          Center(child: Text("Próximo dia")), 
+          Center(child: Text("Próximo dia")),
         ],
       ),
     );
