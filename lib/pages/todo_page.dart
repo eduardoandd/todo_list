@@ -1,6 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 
 import '../model/todo_model.dart';
 import '../repositories/todo_repositories.dart';
@@ -20,6 +23,11 @@ class _TodoPageState extends State<TodoPage> {
   DateTime pickDate = DateTime.now(); // Inicia com a data atual
   DateFormat dateFormat = DateFormat('dd/MM/yyyy');
   bool _initialized = false; 
+  bool notification = false;
+  TimeOfDay? notificationTime;
+  bool taskTime = false;
+  TimeOfDay? taskHour;
+  bool watchIcon = false;
 
   PageController _pageController = PageController(initialPage: 1);
 
@@ -42,6 +50,21 @@ class _TodoPageState extends State<TodoPage> {
     });
     getTasks();
   }
+
+  String formatTimeOfNotification(TimeOfDay? time) {
+    if (time == null) return "Notificação"; // Retorna uma string vazia caso o timeNotification seja nulo
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes';
+  }
+
+  String formatTimeOfTask(TimeOfDay? time) {
+    if (time == null) return ""; // Retorna uma string vazia caso o timeNotification seja nulo
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes';
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,41 +99,81 @@ class _TodoPageState extends State<TodoPage> {
         child: const Icon(Icons.add),
         onPressed: () {
           descriptionController.text = "";
+          notificationTime = null;
+          notification = false;
+          taskTime = false;
           showDialog(
             context: context,
             builder: (BuildContext bc) {
-              return AlertDialog(
-                title: Text("Adicionar tarefa"),
-                content: TextField(
+              return StatefulBuilder(
+                builder: (context, setState) {
+                  return CustomAlertDialog(
+                  title: "Adicionar tarefa",
                   controller: descriptionController,
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("Cancelar"),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      await todoRepository.saveData(
-                        ToDoModel.create(descriptionController.text, false, pickDate),
+                  icon: notification ? 
+                  Icons.notifications : 
+                  Icons.notifications_off,
+
+                  onIconPressed: () async {
+                    setState(() {
+                      notification = !notification;
+                    });
+                    if (notification){
+                      final pickedTime = await showTimePicker(
+                        context: context, 
+                        initialTime: TimeOfDay.now()
                       );
-                      Navigator.pop(context);
+
+                      if (pickedTime !=null) {
+                        setState(() {
+                          notificationTime = pickedTime;
+                          // print(timeNotification);
+                        });
+                      }
+                    }
+                  },
+                  timeNotification: formatTimeOfNotification(notificationTime),
+
+                  icon2: taskTime ?  
+                  Icons.access_time : 
+                  Icons.access_time_filled,
+                  onIconPressed2: () async{
+                    setState (() {
+                      taskTime = !taskTime;
+                      watchIcon = !watchIcon;
+                    });
+                    if (taskTime){
+                      final pickedTaskTime = await showTimePicker(
+                          context: context, 
+                          initialTime: TimeOfDay.now()
+                      );
+                      if (pickedTaskTime != null){
+                        setState((){
+                          taskHour = pickedTaskTime;
+                        });
+                      }
+                    }
+                  },
+                  timeTask: formatTimeOfTask(taskHour),
+                  visible:  watchIcon ? true : false,
+                  onConfirm: () async {
+                      await todoRepository.saveData(
+                        ToDoModel.create(descriptionController.text, false, pickDate,notification,notificationTime, taskTime, taskHour ),
+                      );
                       getTasks();
-                    },
-                    child: Text("Salvar"),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      ),
+                  },
+                  confirmText: "Salvar",
+            );
+          },
+        );
+      },
+    );
+  },
+),
+
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
-          
           if (_initialized) {
             if (index == 0) {
               updateDate(false); 
@@ -158,7 +221,11 @@ class _TodoPageState extends State<TodoPage> {
                         },
                         key: Key(task.key.toString()),
                         child: ListTile(
-                          title: Text(task.description.toString()),
+                          title: Row(
+                            children: [
+                              Text(task.description.toString()),
+                            ],
+                          ),
                           trailing: Switch(
                             onChanged: (bool value) async {
                               task.completed = value;
@@ -172,28 +239,67 @@ class _TodoPageState extends State<TodoPage> {
                             showDialog(
                               context: context,
                               builder: (BuildContext bc) {
-                                return AlertDialog(
-                                  title: Text("Editar tarefa"),
-                                  content: TextField(
-                                    controller: descriptionController,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
+                                return StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return CustomAlertDialog(
+                                      title: "Editar tarefa",
+                                      controller: descriptionController,
+                                      icon: notification ? 
+                                      Icons.notifications : 
+                                      Icons.notifications_off,
+
+                                      onIconPressed: () async {
+                                        setState(() {
+                                          notification = !notification;
+                                        });
+
+                                        if (notification){
+                                          final pickedTime = await showTimePicker(
+                                            context: context, 
+                                            initialTime: TimeOfDay.now()
+                                          );
+
+                                          if (pickedTime !=null) {
+                                            setState(() {
+                                            notificationTime = pickedTime;
+                                            });
+                                          }
+                                        }
                                       },
-                                      child: Text("Cancelar"),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        task.description = descriptionController.text;
-                                        await todoRepository.update(task);
-                                        Navigator.pop(context);
+                                      timeNotification: formatTimeOfNotification(notificationTime),
+
+                                      icon2: taskTime ?  
+                                      Icons.access_time : 
+                                      Icons.access_time_filled,
+                                      onIconPressed2: () async{
+                                        setState (() {
+                                          taskTime = !taskTime;
+                                          watchIcon = !watchIcon;
+                                        });
+                                        if (taskTime){
+                                          final pickedTaskTime = await showTimePicker(
+                                              context: context, 
+                                              initialTime: TimeOfDay.now()
+                                          );
+                                          if (pickedTaskTime != null){
+                                            setState((){
+                                              taskHour = pickedTaskTime;
+                                            });
+                                          }
+                                        }
+                                      },
+                                      timeTask: formatTimeOfTask(taskHour),
+                                      visible:  watchIcon ? true : false,
+
+                                      onConfirm: () async {
+                                        await todoRepository.saveData(
+                                          ToDoModel.create(descriptionController.text, false, pickDate,notification,notificationTime, taskTime, taskHour ),
+                                        );
                                         getTasks();
                                       },
-                                      child: Text("Editar"),
-                                    ),
-                                  ],
+                                      confirmText: "Salvar",
+                                    );
+                                  },
                                 );
                               },
                             );
