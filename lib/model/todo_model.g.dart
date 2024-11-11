@@ -21,15 +21,13 @@ class ToDoModelAdapter extends TypeAdapter<ToDoModel> {
       ..completed = fields[1] as bool
       ..date = fields[2] as DateTime
       ..notify = fields[3] as bool
-      ..notificationTime = fields[4] as TimeOfDay?
-      ..TaskTime = fields[5] as bool
-      ..taskHour = fields[6] as TimeOfDay?;
+      ..notificationTime = fields[4] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, ToDoModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.description)
       ..writeByte(1)
@@ -39,11 +37,7 @@ class ToDoModelAdapter extends TypeAdapter<ToDoModel> {
       ..writeByte(3)
       ..write(obj.notify)
       ..writeByte(4)
-      ..write(obj.notificationTime)
-      ..writeByte(5)
-      ..write(obj.TaskTime)
-      ..writeByte(6)
-      ..write(obj.taskHour);
+      ..write(obj.notificationTime);
   }
 
   @override

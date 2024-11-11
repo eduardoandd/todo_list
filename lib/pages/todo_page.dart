@@ -24,9 +24,9 @@ class _TodoPageState extends State<TodoPage> {
   DateFormat dateFormat = DateFormat('dd/MM/yyyy');
   bool _initialized = false; 
   bool notification = false;
-  TimeOfDay? notificationTime;
+  DateTime? notificationTime;
   bool taskTime = false;
-  TimeOfDay? taskHour;
+  DateTime? taskHour;
   bool watchIcon = false;
 
   PageController _pageController = PageController(initialPage: 1);
@@ -51,14 +51,14 @@ class _TodoPageState extends State<TodoPage> {
     getTasks();
   }
 
-  String formatTimeOfNotification(TimeOfDay? time) {
+  String formatTimeOfNotification(DateTime? time) {
     if (time == null) return "Notificação"; // Retorna uma string vazia caso o timeNotification seja nulo
     final hours = time.hour.toString().padLeft(2, '0');
     final minutes = time.minute.toString().padLeft(2, '0');
     return '$hours:$minutes';
   }
 
-  String formatTimeOfTask(TimeOfDay? time) {
+  String formatTimeOfTask(DateTime? time) {
     if (time == null) return ""; // Retorna uma string vazia caso o timeNotification seja nulo
     final hours = time.hour.toString().padLeft(2, '0');
     final minutes = time.minute.toString().padLeft(2, '0');
@@ -102,6 +102,7 @@ class _TodoPageState extends State<TodoPage> {
           notificationTime = null;
           notification = false;
           taskTime = false;
+          taskHour = null;
           showDialog(
             context: context,
             builder: (BuildContext bc) {
@@ -126,8 +127,13 @@ class _TodoPageState extends State<TodoPage> {
 
                       if (pickedTime !=null) {
                         setState(() {
-                          notificationTime = pickedTime;
-                          // print(timeNotification);
+                          notificationTime = DateTime(
+                            pickDate.year,
+                            pickDate.month,
+                            pickDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
                         });
                       }
                     }
@@ -135,8 +141,8 @@ class _TodoPageState extends State<TodoPage> {
                   timeNotification: formatTimeOfNotification(notificationTime),
 
                   icon2: taskTime ?  
-                  Icons.access_time : 
-                  Icons.access_time_filled,
+                  Icons.access_time_filled:
+                  Icons.access_time ,
                   onIconPressed2: () async{
                     setState (() {
                       taskTime = !taskTime;
@@ -149,7 +155,13 @@ class _TodoPageState extends State<TodoPage> {
                       );
                       if (pickedTaskTime != null){
                         setState((){
-                          taskHour = pickedTaskTime;
+                          taskHour = DateTime(
+                            pickDate.year,
+                            pickDate.month,
+                            pickDate.day,
+                            pickedTaskTime.hour,
+                            pickedTaskTime.minute,
+                          );
                         });
                       }
                     }
@@ -158,7 +170,7 @@ class _TodoPageState extends State<TodoPage> {
                   visible:  watchIcon ? true : false,
                   onConfirm: () async {
                       await todoRepository.saveData(
-                        ToDoModel.create(descriptionController.text, false, pickDate,notification,notificationTime, taskTime, taskHour ),
+                        ToDoModel.create(descriptionController.text, false, pickDate,notification,notificationTime, taskTime, taskHour),
                       );
                       getTasks();
                   },
@@ -261,7 +273,13 @@ class _TodoPageState extends State<TodoPage> {
 
                                           if (pickedTime !=null) {
                                             setState(() {
-                                            notificationTime = pickedTime;
+                                              notificationTime = DateTime(
+                                                pickDate.year,
+                                                pickDate.month,
+                                                pickDate.day,
+                                                pickedTime.hour,
+                                                pickedTime.minute,
+                                              );
                                             });
                                           }
                                         }
@@ -283,7 +301,13 @@ class _TodoPageState extends State<TodoPage> {
                                           );
                                           if (pickedTaskTime != null){
                                             setState((){
-                                              taskHour = pickedTaskTime;
+                                              taskHour = DateTime(
+                                                pickDate.year,
+                                                pickDate.month,
+                                                pickDate.day,
+                                                pickedTaskTime.hour,
+                                                pickedTaskTime.minute,
+                                              );
                                             });
                                           }
                                         }
@@ -293,7 +317,7 @@ class _TodoPageState extends State<TodoPage> {
 
                                       onConfirm: () async {
                                         await todoRepository.saveData(
-                                          ToDoModel.create(descriptionController.text, false, pickDate,notification,notificationTime, taskTime, taskHour ),
+                                          ToDoModel.create(descriptionController.text, false, pickDate,notification,notificationTime, taskTime, taskHour),
                                         );
                                         getTasks();
                                       },

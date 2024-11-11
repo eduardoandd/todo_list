@@ -23,14 +23,14 @@ class ToDoModel extends HiveObject{
   bool notify = false;
 
   @HiveField(4)
-  TimeOfDay? notificationTime;
+  DateTime? notificationTime;
 
 
   @HiveField(5)
   bool TaskTime = false;
 
   @HiveField(6)
-  TimeOfDay? taskHour; 
+  DateTime? taskHour; 
 
 
 }
