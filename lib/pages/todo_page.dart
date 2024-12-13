@@ -3,7 +3,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_list/model/task_model.dart';
 import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../model/todo_model.dart';
 import '../repositories/todo_repositories.dart';
@@ -31,6 +33,8 @@ class _TodoPageState extends State<TodoPage> {
   bool borderIsVisible = false;
 
   PageController _pageController = PageController(initialPage: 1);
+
+  final db = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -97,7 +101,11 @@ class _TodoPageState extends State<TodoPage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {
+        onPressed: () async {
+          // var task = TaskModel(
+          //     description: "Tarefa 2", completed: false, date: DateTime.now());
+          // var doc = await db.collection("tasks").add(task.toJson());
+
           descriptionController.text = "";
           notificationTime = null;
           notification = false;
@@ -135,16 +143,14 @@ class _TodoPageState extends State<TodoPage> {
                             );
                           });
                         }
-                      }
-                      else{
+                      } else {
                         notificationTime = null;
                         borderIsVisible = false;
                       }
                     },
                     timeNotification:
                         formatTimeOfNotification(notificationTime),
-                    icon2:
-                        taskTime ? Icons.alarm : Icons.alarm_off,
+                    icon2: taskTime ? Icons.alarm : Icons.alarm_off,
                     onIconPressed2: () async {
                       setState(() {
                         taskTime = !taskTime;
@@ -164,27 +170,21 @@ class _TodoPageState extends State<TodoPage> {
                             );
                           });
                         }
-                      }
-                      else{
+                      } else {
                         taskHour = null;
                         borderIsVisible = false;
                         // setState((){});
                       }
                     },
                     timeTask: formatTimeOfTask(taskHour),
-                    visible: watchIcon ? true : false,
+                    // visible: watchIcon ? true : false,
                     borderIsVisible: borderIsVisible,
                     onConfirm: () async {
-                      await todoRepository.saveData(
-                        ToDoModel.create(
-                            descriptionController.text,
-                            false,
-                            pickDate,
-                            notification,
-                            notificationTime,
-                            taskTime,
-                            taskHour),
-                      );
+                      var task = TaskModel(
+                          description: descriptionController.text,
+                          completed: false,
+                          date: pickDate);
+                      await db.collection('tasks').add(task.toJson());
                       getTasks();
                     },
                     confirmText: "Salvar",
@@ -233,137 +233,170 @@ class _TodoPageState extends State<TodoPage> {
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: _tasks.length,
-                    itemBuilder: (BuildContext bc, int index) {
-                      var task = _tasks[index];
-                      return Dismissible(
-                        onDismissed: (DismissDirection dismissDirection) async {
-                          todoRepository.delete(task);
-                          getTasks();
-                        },
-                        key: Key(task.key.toString()),
-                        child: ListTile(
-                          title: Row(
-                            children: [
-                              Text(task.description.toString()),
-                            ],
-                          ),
-                          trailing: Switch(
-                            onChanged: (bool value) async {
-                              task.completed = value;
-                              todoRepository.update(task);
-                              getTasks();
-                            },
-                            value: task.completed,
-                          ),
-                          onLongPress: () {
-                            descriptionController.text =
-                                task.description.toString();
-                            notification = task.notify;
-                            notificationTime = task.notificationTime;
-                            taskTime = task.TaskTime;
-                            taskHour = task.taskHour;
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext bc) {
-                                return StatefulBuilder(
-                                  builder: (context, setState) {
-                                    return CustomAlertDialog(
-                                      title: "Editar tarefa",
-                                      controller: descriptionController,
-                                      icon: notification
-                                          ? Icons.notifications
-                                          : Icons.notifications_off,
-                                      onIconPressed: () async {
-                                        setState(() {
-                                          notification = !notification;
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: justNotCompleted
+                          ? db
+                              .collection('tasks')
+                              .where('completed', isEqualTo: false)
+                              .snapshots()
+                          : db.collection("tasks").snapshots(),
+                      builder: (context, snapshot) {
+                        return !snapshot.hasData
+                            ? CircularProgressIndicator()
+                            : ListView(
+                                children: snapshot.data!.docs.map((e) {
+                                  var task = TaskModel.fromJson(
+                                      (e.data() as Map<String, dynamic>));
+                                  return Dismissible(
+                                    onDismissed: (DismissDirection
+                                        dismissDirection) async {
+                                      await db
+                                          .collection('tasks')
+                                          .doc(e.id)
+                                          .delete();
+                                      getTasks();
+                                    },
+                                    key: Key(e.id),
+                                    child: ListTile(
+                                      title: Row(
+                                        children: [
+                                          Text(task.description.toString()),
+                                        ],
+                                      ),
+                                      trailing: Switch(
+                                        onChanged: (bool value) async {
+                                          task.completed = value;
+                                          await db
+                                              .collection("tasks")
+                                              .doc(e.id)
+                                              .update(task.toJson());
+                                          getTasks();
+                                        },
+                                        value: task.completed,
+                                      ),
+                                      onLongPress: () {
+                                        descriptionController.text =
+                                            task.description.toString();
+                                        // notification = task.notify;
+                                        notificationTime =
+                                            task.notificationTime;
+                                        // taskTime = task.TaskTime;
+                                        // taskHour = task.taskHour;
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext bc) {
+                                            return StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return CustomAlertDialog(
+                                                  title: "Editar tarefa",
+                                                  controller:
+                                                      descriptionController,
+                                                  icon: notification
+                                                      ? Icons.notifications
+                                                      : Icons.notifications_off,
+                                                  onIconPressed: () async {
+                                                    setState(() {
+                                                      notification =
+                                                          !notification;
+                                                    });
 
-                                          
-                                        });
+                                                    if (notification) {
+                                                      final pickedTime =
+                                                          await showTimePicker(
+                                                              context: context,
+                                                              initialTime:
+                                                                  TimeOfDay
+                                                                      .now());
 
-                                        if (notification) {
-                                          final pickedTime =
-                                              await showTimePicker(
-                                                  context: context,
-                                                  initialTime: TimeOfDay.now());
-
-                                          if (pickedTime != null) {
-                                            setState(() {
-                                              notificationTime = DateTime(
-                                                pickDate.year,
-                                                pickDate.month,
-                                                pickDate.day,
-                                                pickedTime.hour,
-                                                pickedTime.minute,
-                                              );
-                                            });
-                                          }
-                                        }
-                                        else{
-                                          notificationTime = null;
-                                          setState((){});
-                                        }
-                                        task.notificationTime = notificationTime;
-                                        setState((){});
+                                                      if (pickedTime != null) {
+                                                        setState(() {
+                                                          notificationTime =
+                                                              DateTime(
+                                                            pickDate.year,
+                                                            pickDate.month,
+                                                            pickDate.day,
+                                                            pickedTime.hour,
+                                                            pickedTime.minute,
+                                                          );
+                                                        });
+                                                      }
+                                                    } else {
+                                                      notificationTime = null;
+                                                      setState(() {});
+                                                    }
+                                                    task.notificationTime =
+                                                        notificationTime;
+                                                    setState(() {});
+                                                  },
+                                                  timeNotification:
+                                                      formatTimeOfNotification(
+                                                          notificationTime),
+                                                  icon2: taskTime
+                                                      ? Icons.alarm
+                                                      : Icons.alarm_off,
+                                                  onIconPressed2: () async {
+                                                    setState(() {
+                                                      taskTime = !taskTime;
+                                                      borderIsVisible =
+                                                          !borderIsVisible;
+                                                    });
+                                                    if (taskTime) {
+                                                      final pickedTaskTime =
+                                                          await showTimePicker(
+                                                              context: context,
+                                                              initialTime:
+                                                                  TimeOfDay
+                                                                      .now());
+                                                      if (pickedTaskTime !=
+                                                          null) {
+                                                        setState(() {
+                                                          taskHour = DateTime(
+                                                            pickDate.year,
+                                                            pickDate.month,
+                                                            pickDate.day,
+                                                            pickedTaskTime.hour,
+                                                            pickedTaskTime
+                                                                .minute,
+                                                          );
+                                                        });
+                                                      }
+                                                    } else {
+                                                      taskHour = null;
+                                                      borderIsVisible = false;
+                                                      setState(() {});
+                                                    }
+                                                    // task.taskHour = taskHour;
+                                                    setState(() {});
+                                                  },
+                                                  timeTask: formatTimeOfTask(
+                                                      taskHour),
+                                                  // visible: task.taskHour != null
+                                                  //     ? true
+                                                  //     : false,
+                                                  borderIsVisible:
+                                                      borderIsVisible,
+                                                  onConfirm: () async {
+                                                    task.description =
+                                                        descriptionController
+                                                            .text;
+                                                    await db
+                                                        .collection('tasks')
+                                                        .doc(e.id)
+                                                        .update(task.toJson());
+                                                    getTasks();
+                                                  },
+                                                  confirmText: "Salvar",
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
                                       },
-                                      timeNotification:
-                                          formatTimeOfNotification(
-                                              notificationTime),
-                                      icon2:
-                                          taskTime ? Icons.alarm : Icons.alarm_off,
-                                      onIconPressed2: () async {
-                                        setState(() {
-                                          taskTime = !taskTime;
-                                          borderIsVisible = !borderIsVisible;
-                                          
-                                        });
-                                        if (taskTime) {
-                                          final pickedTaskTime =
-                                              await showTimePicker(
-                                                  context: context,
-                                                  initialTime: TimeOfDay.now());
-                                          if (pickedTaskTime != null) {
-                                            setState(() {
-                                              taskHour = DateTime(
-                                                pickDate.year,
-                                                pickDate.month,
-                                                pickDate.day,
-                                                pickedTaskTime.hour,
-                                                pickedTaskTime.minute,
-                                              );
-                                            });
-
-                                            
-                                          }
-                                        }
-                                        else{
-                                          taskHour = null;
-                                          borderIsVisible = false;
-                                          setState((){});
-                                        }
-                                        task.taskHour = taskHour;
-                                        setState((){});
-                                      },
-                                      timeTask: formatTimeOfTask(taskHour),
-                                      visible: task.taskHour != null ? true : false,
-                                      borderIsVisible: borderIsVisible,
-                                      onConfirm: () async {
-                                        task.description = descriptionController.text;
-                                        await todoRepository.update(task);
-                                        getTasks();
-                                      },
-                                      confirmText: "Salvar",
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                      }),
                 ),
               ],
             ),

@@ -14,7 +14,7 @@ class CustomAlertDialog extends StatelessWidget {
   final VoidCallback onIconPressed2;
   final String timeNotification;
   final String timeTask;
-  final bool visible;
+  // final bool visible;
   final bool borderIsVisible;
 
   CustomAlertDialog({
@@ -28,7 +28,7 @@ class CustomAlertDialog extends StatelessWidget {
     required this.onIconPressed2,
     required this.timeNotification,
     required this.timeTask,
-    required this.visible,
+    // required this.visible,
     required this.borderIsVisible
   });
 

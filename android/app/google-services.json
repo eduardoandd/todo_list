@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "428286062397",
+    "project_id": "tasks-eduardo-firabase",
+    "storage_bucket": "tasks-eduardo-firabase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428286062397:android:87796660d6c6b43e049f54",
+        "android_client_info": {
+          "package_name": "com.eduardo.todo_list.todo_list"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLzr8sfRwdst8xjhFH3d4lWyf9vlPvW1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
