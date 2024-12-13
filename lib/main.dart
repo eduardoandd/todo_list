@@ -16,7 +16,6 @@ void main() async {
   Hive.init(documentDirectory.path);
   Hive.registerAdapter(ToDoModelAdapter());
 
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

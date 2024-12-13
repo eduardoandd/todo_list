@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_list/pages/splash_screen/splash_screen_page.dart';
 import 'package:todo_list/pages/todo_page.dart';
 
 class MainApp extends StatelessWidget {
@@ -22,7 +23,7 @@ class MainApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const TodoPage(),
+      home: const SplashScreen(),
     );
   }
 }

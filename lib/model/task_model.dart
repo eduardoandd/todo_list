@@ -7,6 +7,9 @@ class TaskModel {
   bool? notify;
   DateTime? notificationTime;
   DateTime? taskTime;
+  DateTime creationDate = DateTime.now();
+  DateTime alterationDate = DateTime.now();
+  String userId = '';
 
   TaskModel(
       {
@@ -15,7 +18,8 @@ class TaskModel {
         required this.date,
         this.notify,
         this.notificationTime,
-        this.taskTime
+        this.taskTime,
+        required this.userId
       });
 
   TaskModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +31,9 @@ class TaskModel {
     ? (json['notificationTime'] as Timestamp).toDate()
     : null;
     taskTime = json['taskTime'];
+    creationDate =(json['creationDate'] as Timestamp).toDate();
+    alterationDate =(json['alterationDate'] as Timestamp).toDate();
+    userId = json['userId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -37,6 +44,9 @@ class TaskModel {
     data['notify'] = this.notify;
     data['notificationTime'] = this.notificationTime;
     data['taskTime'] = this.taskTime;
+    data['creationDate'] = Timestamp.fromDate(this.creationDate);
+    data['alterationDate'] = Timestamp.fromDate(this.alterationDate);
+    data['userId'] = this.userId;
     return data;
   }
 }

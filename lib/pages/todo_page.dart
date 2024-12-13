@@ -3,9 +3,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/model/task_model.dart';
 import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 import '../model/todo_model.dart';
 import '../repositories/todo_repositories.dart';
@@ -35,12 +37,21 @@ class _TodoPageState extends State<TodoPage> {
   PageController _pageController = PageController(initialPage: 1);
 
   final db = FirebaseFirestore.instance;
+  String userId = '';
 
   @override
   void initState() {
     super.initState();
     getTasks();
     _initialized = true;
+
+    loadUser();
+  }
+
+  loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('user_id')!;
+    setState(() {});
   }
 
   void getTasks() async {
@@ -183,7 +194,8 @@ class _TodoPageState extends State<TodoPage> {
                       var task = TaskModel(
                           description: descriptionController.text,
                           completed: false,
-                          date: pickDate);
+                          date: pickDate,
+                          userId: userId);
                       await db.collection('tasks').add(task.toJson());
                       getTasks();
                     },
@@ -238,8 +250,12 @@ class _TodoPageState extends State<TodoPage> {
                           ? db
                               .collection('tasks')
                               .where('completed', isEqualTo: false)
+                              .where('userId', isEqualTo: userId)
                               .snapshots()
-                          : db.collection("tasks").snapshots(),
+                          : db
+                          .collection("tasks")
+                          .where('userId', isEqualTo: userId)
+                          .snapshots(),
                       builder: (context, snapshot) {
                         return !snapshot.hasData
                             ? CircularProgressIndicator()
