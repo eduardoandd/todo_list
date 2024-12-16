@@ -35,14 +35,11 @@ class _TodoPageState extends State<TodoPage> {
   DateTime? taskHour;
   bool watchIcon = false;
   bool borderIsVisible = false;
-  
-  
 
   PageController _pageController = PageController(initialPage: 1);
 
   final db = FirebaseFirestore.instance;
   String userId = '';
-
 
   @override
   void initState() {
@@ -75,20 +72,6 @@ class _TodoPageState extends State<TodoPage> {
     getTasks();
   }
 
-  String formatTimeOfNotification(DateTime? time) {
-    if (time == null) return "Notificação";
-    final hours = time.hour.toString().padLeft(2, '0');
-    final minutes = time.minute.toString().padLeft(2, '0');
-    return '$hours:$minutes';
-  }
-
-  String formatTimeOfTask(DateTime? time) {
-    if (time == null) return "";
-    final hours = time.hour.toString().padLeft(2, '0');
-    final minutes = time.minute.toString().padLeft(2, '0');
-    return '$hours:$minutes';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,6 +83,7 @@ class _TodoPageState extends State<TodoPage> {
           });
         },
       ),
+      drawer: Drawer(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
@@ -118,22 +102,14 @@ class _TodoPageState extends State<TodoPage> {
                   return CustomAlertDialog(
                     title: "Adicionar tarefa",
                     controller: descriptionController,
-                    icon: notification
-                        ? Icons.notifications
-                        : Icons.notifications_off,
-
-                    timeNotification:
-                        formatTimeOfNotification(notificationTime),
-                    icon2: taskTime ? Icons.alarm : Icons.alarm_off,
-                    timeTask: formatTimeOfTask(taskHour),
-                    // visible: watchIcon ? true : false,
                     borderIsVisible: borderIsVisible,
                     onConfirm: () async {
                       var task = TaskModel(
                           description: descriptionController.text,
                           completed: false,
                           date: pickDate,
-                          userId: userId, day: pickDate.day);
+                          userId: userId,
+                          day: pickDate.day);
                       await db.collection('tasks').add(task.toJson());
                       getTasks();
                     },
@@ -244,17 +220,6 @@ class _TodoPageState extends State<TodoPage> {
                                                   title: "Editar tarefa",
                                                   controller:
                                                       descriptionController,
-                                                  icon: notification
-                                                      ? Icons.notifications
-                                                      : Icons.notifications_off,
-                                                  timeNotification:
-                                                      formatTimeOfNotification(
-                                                          notificationTime),
-                                                  icon2: taskTime
-                                                      ? Icons.alarm
-                                                      : Icons.alarm_off,
-                                                  timeTask: formatTimeOfTask(
-                                                      taskHour),
                                                   borderIsVisible:
                                                       borderIsVisible,
                                                   onConfirm: () async {
