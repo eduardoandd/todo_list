@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -18,8 +19,33 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final fcmToken = await FirebaseMessaging.instance
+      .getToken(vapidKey: "BKagOny0KF_2pCJQ3m....moL0ewzQ8rZu");
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if(message.notification != null){
+      print(message.notification);
+    }
+  });
+
+  FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
+    print("Obtendo novamente");
+  }).onError((err) {
+    print(err);
+  });
+  print(fcmToken);
 
   runApp(const MainApp());
 }
-
-

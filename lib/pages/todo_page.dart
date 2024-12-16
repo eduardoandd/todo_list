@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/model/task_model.dart';
 import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo_list/shared/widgets/custom_appbar_widget.dart';
 import 'package:uuid/uuid.dart';
 
 import '../model/todo_model.dart';
@@ -88,39 +89,17 @@ class _TodoPageState extends State<TodoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            dateFormat.format(pickDate),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.calendar_today),
-            onPressed: () async {
-              final selectedDate = await showDatePicker(
-                context: context,
-                initialDate: pickDate,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-              );
-              if (selectedDate != null) {
-                setState(() {
-                  pickDate = selectedDate;
-                });
-                getTasks();
-              }
-            },
-          ),
-        ],
+      appBar: CustomAppBarWidget(
+        pickDate: pickDate,
+        onDateSelected: (selectedDate) {
+          setState(() {
+            pickDate = selectedDate;
+          });
+        },
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
-          // var task = TaskModel(
-          //     description: "Tarefa 2", completed: false, date: DateTime.now());
-          // var doc = await db.collection("tasks").add(task.toJson());
-
           descriptionController.text = "";
           notificationTime = null;
           notification = false;
@@ -257,9 +236,9 @@ class _TodoPageState extends State<TodoPage> {
                               .where('userId', isEqualTo: userId)
                               .snapshots()
                           : db
-                          .collection("tasks")
-                          .where('userId', isEqualTo: userId)
-                          .snapshots(),
+                              .collection("tasks")
+                              .where('userId', isEqualTo: userId)
+                              .snapshots(),
                       builder: (context, snapshot) {
                         return !snapshot.hasData
                             ? CircularProgressIndicator()

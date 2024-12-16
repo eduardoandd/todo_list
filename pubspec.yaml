@@ -38,6 +38,7 @@ dependencies:
   uuid: ^4.1.0
   shared_preferences: ^2.0.15
   firebase_analytics: ^10.1.6
+  firebase_messaging: ^14.3.0
 
 
 
