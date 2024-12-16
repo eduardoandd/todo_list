@@ -4,7 +4,6 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:todo_list/pages/main_app.dart';
 import 'package:todo_list/pages/todo_page.dart';
 
-
 import 'model/todo_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';

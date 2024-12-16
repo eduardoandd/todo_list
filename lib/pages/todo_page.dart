@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -49,6 +50,9 @@ class _TodoPageState extends State<TodoPage> {
   }
 
   loadUser() async {
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    await analytics.logEvent(name: "LoadUserOpen");
+
     final prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('user_id')!;
     setState(() {});
