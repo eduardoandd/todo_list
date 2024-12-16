@@ -4,6 +4,7 @@ class TaskModel {
   String description = "";
   bool completed = false;
   DateTime date = DateTime.now();
+  int day = 0;
   bool? notify;
   DateTime? notificationTime;
   DateTime? taskTime;
@@ -16,6 +17,7 @@ class TaskModel {
         required this.description,
         required this.completed,
         required this.date,
+        required this.day,
         this.notify,
         this.notificationTime,
         this.taskTime,
@@ -26,6 +28,7 @@ class TaskModel {
     description = json['description'];
     completed = json['completed'];
     date = (json['date'] as Timestamp).toDate();
+    day = (json['day']);
     notify = json['notify'];
     notificationTime = json['notificationTime'] != null
     ? (json['notificationTime'] as Timestamp).toDate()
@@ -41,6 +44,7 @@ class TaskModel {
     data['description'] = this.description;
     data['completed'] = this.completed;
     data['date'] = this.date;
+    data['day'] = this.day;
     data['notify'] = this.notify;
     data['notificationTime'] = this.notificationTime;
     data['taskTime'] = this.taskTime;

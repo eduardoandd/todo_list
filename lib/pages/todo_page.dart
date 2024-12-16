@@ -35,11 +35,14 @@ class _TodoPageState extends State<TodoPage> {
   DateTime? taskHour;
   bool watchIcon = false;
   bool borderIsVisible = false;
+  
+  
 
   PageController _pageController = PageController(initialPage: 1);
 
   final db = FirebaseFirestore.instance;
   String userId = '';
+
 
   @override
   void initState() {
@@ -118,58 +121,10 @@ class _TodoPageState extends State<TodoPage> {
                     icon: notification
                         ? Icons.notifications
                         : Icons.notifications_off,
-                    onIconPressed: () async {
-                      setState(() {
-                        notification = !notification;
-                      });
-                      if (notification) {
-                        final pickedTime = await showTimePicker(
-                            context: context, initialTime: TimeOfDay.now());
 
-                        if (pickedTime != null) {
-                          setState(() {
-                            notificationTime = DateTime(
-                              pickDate.year,
-                              pickDate.month,
-                              pickDate.day,
-                              pickedTime.hour,
-                              pickedTime.minute,
-                            );
-                          });
-                        }
-                      } else {
-                        notificationTime = null;
-                        borderIsVisible = false;
-                      }
-                    },
                     timeNotification:
                         formatTimeOfNotification(notificationTime),
                     icon2: taskTime ? Icons.alarm : Icons.alarm_off,
-                    onIconPressed2: () async {
-                      setState(() {
-                        taskTime = !taskTime;
-                        borderIsVisible = !borderIsVisible;
-                      });
-                      if (taskTime) {
-                        final pickedTaskTime = await showTimePicker(
-                            context: context, initialTime: TimeOfDay.now());
-                        if (pickedTaskTime != null) {
-                          setState(() {
-                            taskHour = DateTime(
-                              pickDate.year,
-                              pickDate.month,
-                              pickDate.day,
-                              pickedTaskTime.hour,
-                              pickedTaskTime.minute,
-                            );
-                          });
-                        }
-                      } else {
-                        taskHour = null;
-                        borderIsVisible = false;
-                        // setState((){});
-                      }
-                    },
                     timeTask: formatTimeOfTask(taskHour),
                     // visible: watchIcon ? true : false,
                     borderIsVisible: borderIsVisible,
@@ -178,7 +133,7 @@ class _TodoPageState extends State<TodoPage> {
                           description: descriptionController.text,
                           completed: false,
                           date: pickDate,
-                          userId: userId);
+                          userId: userId, day: pickDate.day);
                       await db.collection('tasks').add(task.toJson());
                       getTasks();
                     },
@@ -234,14 +189,16 @@ class _TodoPageState extends State<TodoPage> {
                               .collection('tasks')
                               .where('completed', isEqualTo: false)
                               .where('userId', isEqualTo: userId)
+                              .where('day', isEqualTo: pickDate.day)
                               .snapshots()
                           : db
                               .collection("tasks")
                               .where('userId', isEqualTo: userId)
+                              .where('day', isEqualTo: pickDate.day)
                               .snapshots(),
                       builder: (context, snapshot) {
                         return !snapshot.hasData
-                            ? CircularProgressIndicator()
+                            ? Center(child: CircularProgressIndicator())
                             : ListView(
                                 children: snapshot.data!.docs.map((e) {
                                   var task = TaskModel.fromJson(
@@ -276,11 +233,8 @@ class _TodoPageState extends State<TodoPage> {
                                       onLongPress: () {
                                         descriptionController.text =
                                             task.description.toString();
-                                        // notification = task.notify;
                                         notificationTime =
                                             task.notificationTime;
-                                        // taskTime = task.TaskTime;
-                                        // taskHour = task.taskHour;
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext bc) {
@@ -293,85 +247,14 @@ class _TodoPageState extends State<TodoPage> {
                                                   icon: notification
                                                       ? Icons.notifications
                                                       : Icons.notifications_off,
-                                                  onIconPressed: () async {
-                                                    setState(() {
-                                                      notification =
-                                                          !notification;
-                                                    });
-
-                                                    if (notification) {
-                                                      final pickedTime =
-                                                          await showTimePicker(
-                                                              context: context,
-                                                              initialTime:
-                                                                  TimeOfDay
-                                                                      .now());
-
-                                                      if (pickedTime != null) {
-                                                        setState(() {
-                                                          notificationTime =
-                                                              DateTime(
-                                                            pickDate.year,
-                                                            pickDate.month,
-                                                            pickDate.day,
-                                                            pickedTime.hour,
-                                                            pickedTime.minute,
-                                                          );
-                                                        });
-                                                      }
-                                                    } else {
-                                                      notificationTime = null;
-                                                      setState(() {});
-                                                    }
-                                                    task.notificationTime =
-                                                        notificationTime;
-                                                    setState(() {});
-                                                  },
                                                   timeNotification:
                                                       formatTimeOfNotification(
                                                           notificationTime),
                                                   icon2: taskTime
                                                       ? Icons.alarm
                                                       : Icons.alarm_off,
-                                                  onIconPressed2: () async {
-                                                    setState(() {
-                                                      taskTime = !taskTime;
-                                                      borderIsVisible =
-                                                          !borderIsVisible;
-                                                    });
-                                                    if (taskTime) {
-                                                      final pickedTaskTime =
-                                                          await showTimePicker(
-                                                              context: context,
-                                                              initialTime:
-                                                                  TimeOfDay
-                                                                      .now());
-                                                      if (pickedTaskTime !=
-                                                          null) {
-                                                        setState(() {
-                                                          taskHour = DateTime(
-                                                            pickDate.year,
-                                                            pickDate.month,
-                                                            pickDate.day,
-                                                            pickedTaskTime.hour,
-                                                            pickedTaskTime
-                                                                .minute,
-                                                          );
-                                                        });
-                                                      }
-                                                    } else {
-                                                      taskHour = null;
-                                                      borderIsVisible = false;
-                                                      setState(() {});
-                                                    }
-                                                    // task.taskHour = taskHour;
-                                                    setState(() {});
-                                                  },
                                                   timeTask: formatTimeOfTask(
                                                       taskHour),
-                                                  // visible: task.taskHour != null
-                                                  //     ? true
-                                                  //     : false,
                                                   borderIsVisible:
                                                       borderIsVisible,
                                                   onConfirm: () async {

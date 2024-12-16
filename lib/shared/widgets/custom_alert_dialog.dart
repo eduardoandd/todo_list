@@ -10,8 +10,6 @@ class CustomAlertDialog extends StatelessWidget {
   final Function onConfirm;
   final IconData icon;
   final IconData icon2;
-  final VoidCallback onIconPressed;
-  final VoidCallback onIconPressed2;
   final String timeNotification;
   final String timeTask;
   // final bool visible;
@@ -24,8 +22,6 @@ class CustomAlertDialog extends StatelessWidget {
     required this.onConfirm,
     required this.icon,
     required this.icon2,
-    required this.onIconPressed,
-    required this.onIconPressed2,
     required this.timeNotification,
     required this.timeTask,
     // required this.visible,
@@ -41,10 +37,6 @@ class CustomAlertDialog extends StatelessWidget {
           Text(title),
           Column(
             children: [
-              IconButton(
-                onPressed: onIconPressed,
-                icon: Icon(icon)
-              ),
               Text(timeNotification, style: TextStyle(fontSize: 12),)
             ],
           )
@@ -77,10 +69,6 @@ class CustomAlertDialog extends StatelessWidget {
                 ,
                 child: Row(
                   children: [
-                    IconButton(
-                      onPressed: onIconPressed2,
-                      icon: Icon(icon2)
-                    ),
                     
                     SizedBox(width: 8),
                     Text(
@@ -88,18 +76,10 @@ class CustomAlertDialog extends StatelessWidget {
                       style: TextStyle(color: Colors.grey[800]),
                     ),
                     SizedBox(width: 8),
-                    
-                    // Visibility(
-                    //   visible:  visible,
-                    //   child: Icon(Icons.close, color: Colors.red[600], size: 20,)
-                    // ),
-                    
-
                   ],
                 ),
               )
 
-              // Icon(Icons.access_time),
               
 
             ],
