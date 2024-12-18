@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_holo_date_picker/date_picker.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:intl/intl.dart';
 
 class CustomAppBarWidget extends StatelessWidget
@@ -20,11 +23,17 @@ class CustomAppBarWidget extends StatelessWidget
         IconButton(
           icon: Icon(Icons.calendar_today),
           onPressed: () async {
-            final selectedDate = await showDatePicker(
-              context: context,
+            final selectedDate = await DatePicker.showSimpleDatePicker(
+              context,
+              titleText: "",
               initialDate: pickDate,
-              firstDate: DateTime(2000),
-              lastDate: DateTime(2100),
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2090),
+              dateFormat: "dd-MMMM-yyyy",
+              locale: DateTimePickerLocale.pt_br,
+              looping: true,
+              cancelText: "Cancelar",
+              confirmText: "Confirmar"
             );
             if (selectedDate != null) {
               onDateSelected(selectedDate);
@@ -36,6 +45,5 @@ class CustomAppBarWidget extends StatelessWidget
   }
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(kToolbarHeight); 
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

@@ -3,13 +3,17 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_holo_date_picker/date_picker.dart';
+import 'package:flutter_holo_date_picker/i18n/date_picker_i18n.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/model/task_model.dart';
 import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_list/shared/widgets/custom_appbar_widget.dart';
-import 'package:uuid/uuid.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+
+// import 'package:uuid/uuid.dart';
 
 import '../model/todo_model.dart';
 import '../repositories/todo_repositories.dart';
@@ -40,6 +44,7 @@ class _TodoPageState extends State<TodoPage> {
 
   final db = FirebaseFirestore.instance;
   String userId = '';
+  
 
   @override
   void initState() {
@@ -120,6 +125,7 @@ class _TodoPageState extends State<TodoPage> {
           );
         },
       ),
+
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
