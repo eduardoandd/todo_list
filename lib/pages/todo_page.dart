@@ -17,6 +17,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 
 import '../model/todo_model.dart';
 import '../repositories/todo_repositories.dart';
+import '../shared/widgets/custom_drawer_widget.dart';
 
 class TodoPage extends StatefulWidget {
   const TodoPage({Key? key}) : super(key: key);
@@ -88,7 +89,7 @@ class _TodoPageState extends State<TodoPage> {
           });
         },
       ),
-      drawer: Drawer(),
+      drawer: CustomDrawerWidget(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
