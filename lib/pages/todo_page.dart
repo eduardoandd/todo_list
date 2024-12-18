@@ -102,7 +102,6 @@ class _TodoPageState extends State<TodoPage> {
                   return CustomAlertDialog(
                     title: "Adicionar tarefa",
                     controller: descriptionController,
-                    borderIsVisible: borderIsVisible,
                     onConfirm: () async {
                       var task = TaskModel(
                           description: descriptionController.text,
@@ -220,8 +219,6 @@ class _TodoPageState extends State<TodoPage> {
                                                   title: "Editar tarefa",
                                                   controller:
                                                       descriptionController,
-                                                  borderIsVisible:
-                                                      borderIsVisible,
                                                   onConfirm: () async {
                                                     task.description =
                                                         descriptionController
