@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +10,6 @@ import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_list/shared/widgets/custom_appbar_widget.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-
-// import 'package:uuid/uuid.dart';
 
 import '../model/todo_model.dart';
 import '../repositories/todo_repositories.dart';
@@ -31,7 +27,7 @@ class _TodoPageState extends State<TodoPage> {
   var _tasks = <ToDoModel>[];
   var descriptionController = TextEditingController();
   bool justNotCompleted = false;
-  DateTime pickDate = DateTime.now(); // Inicia com a data atual
+  DateTime pickDate = DateTime.now();
   DateFormat dateFormat = DateFormat('dd/MM/yyyy');
   bool _initialized = false;
   bool notification = false;
@@ -45,7 +41,6 @@ class _TodoPageState extends State<TodoPage> {
 
   final db = FirebaseFirestore.instance;
   String userId = '';
-  
 
   @override
   void initState() {
@@ -91,6 +86,7 @@ class _TodoPageState extends State<TodoPage> {
       ),
       drawer: CustomDrawerWidget(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.purple.shade600,
         child: const Icon(Icons.add),
         onPressed: () async {
           descriptionController.text = "";
@@ -126,7 +122,6 @@ class _TodoPageState extends State<TodoPage> {
           );
         },
       ),
-
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -152,7 +147,8 @@ class _TodoPageState extends State<TodoPage> {
                     children: [
                       Text(
                         "Apenas não concluídos",
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
                       ),
                       Switch(
                         value: justNotCompleted,
@@ -160,12 +156,14 @@ class _TodoPageState extends State<TodoPage> {
                           justNotCompleted = value;
                           getTasks();
                         },
+                        activeColor: Colors.purple.shade600,
                       ),
                     ],
                   ),
                 ),
                 Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
+                  child: Container(
+                    child: StreamBuilder<QuerySnapshot>(
                       stream: justNotCompleted
                           ? db
                               .collection('tasks')
@@ -195,59 +193,88 @@ class _TodoPageState extends State<TodoPage> {
                                       getTasks();
                                     },
                                     key: Key(e.id),
-                                    child: ListTile(
-                                      title: Row(
-                                        children: [
-                                          Text(task.description.toString()),
-                                        ],
-                                      ),
-                                      trailing: Switch(
-                                        onChanged: (bool value) async {
-                                          task.completed = value;
-                                          await db
-                                              .collection("tasks")
-                                              .doc(e.id)
-                                              .update(task.toJson());
-                                          getTasks();
-                                        },
-                                        value: task.completed,
-                                      ),
-                                      onLongPress: () {
-                                        descriptionController.text =
-                                            task.description.toString();
-                                        notificationTime =
-                                            task.notificationTime;
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext bc) {
-                                            return StatefulBuilder(
-                                              builder: (context, setState) {
-                                                return CustomAlertDialog(
-                                                  title: "Editar tarefa",
-                                                  controller:
-                                                      descriptionController,
-                                                  onConfirm: () async {
-                                                    task.description =
-                                                        descriptionController
-                                                            .text;
-                                                    await db
-                                                        .collection('tasks')
-                                                        .doc(e.id)
-                                                        .update(task.toJson());
-                                                    getTasks();
-                                                  },
-                                                  confirmText: "Salvar",
-                                                );
-                                              },
-                                            );
+                                    child: Container(
+                                      margin: EdgeInsets.all(8),
+                                      // padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                          color: task.completed
+                                              ? Colors.purple.shade50
+                                              : Colors.white,
+                                          borderRadius: BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    Colors.grey.withOpacity(0.2),
+                                                spreadRadius: 1,
+                                                blurRadius: 5,
+                                                offset: Offset(0, 3))
+                                          ]),
+                                      child: ListTile(
+                                        title: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                task.description.toString(),
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
+                                                  // decoration:  task.completed ? TextDecoration.lineThrough : TextDecoration.none
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        trailing: Switch(
+                                          onChanged: (bool value) async {
+                                            task.completed = value;
+                                            await db
+                                                .collection("tasks")
+                                                .doc(e.id)
+                                                .update(task.toJson());
+                                            getTasks();
                                           },
-                                        );
-                                      },
+                                          value: task.completed,
+                                          activeColor: Colors.purple.shade500,
+                                        ),
+                                        onLongPress: () {
+                                          descriptionController.text =
+                                              task.description.toString();
+                                          notificationTime =
+                                              task.notificationTime;
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext bc) {
+                                              return StatefulBuilder(
+                                                builder: (context, setState) {
+                                                  return CustomAlertDialog(
+                                                    title: "Editar tarefa",
+                                                    controller:
+                                                        descriptionController,
+                                                    onConfirm: () async {
+                                                      task.description =
+                                                          descriptionController
+                                                              .text;
+                                                      await db
+                                                          .collection('tasks')
+                                                          .doc(e.id)
+                                                          .update(task.toJson());
+                                                      getTasks();
+                                                    },
+                                                    confirmText: "Salvar",
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
                                     ),
                                   );
                                 }).toList(),
                               );
-                      }),
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),

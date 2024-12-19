@@ -4,13 +4,11 @@ import 'package:flutter_holo_date_picker/date_picker.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:intl/intl.dart';
 
-class CustomAppBarWidget extends StatelessWidget
-    implements PreferredSizeWidget {
+class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final DateTime pickDate;
   final Function(DateTime) onDateSelected;
 
-  const CustomAppBarWidget(
-      {Key? key, required this.pickDate, required this.onDateSelected})
+  const CustomAppBarWidget({Key? key, required this.pickDate, required this.onDateSelected})
       : super(key: key);
 
   @override
@@ -18,10 +16,24 @@ class CustomAppBarWidget extends StatelessWidget
     DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
     return AppBar(
-      title: Center(child: Text(dateFormat.format(pickDate))),
+      // backgroundColor: Colors.purple.shade600,  
+      elevation: 2,  
+      title: Center(
+        child: Text(
+          dateFormat.format(pickDate),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,  
+          ),
+        ),
+      ),
       actions: [
         IconButton(
-          icon: Icon(Icons.calendar_today),
+          icon: Icon(
+            Icons.calendar_today,
+            color: Colors.white,  
+          ),
           onPressed: () async {
             final selectedDate = await DatePicker.showSimpleDatePicker(
               context,
@@ -32,8 +44,8 @@ class CustomAppBarWidget extends StatelessWidget
               dateFormat: "dd-MMMM-yyyy",
               locale: DateTimePickerLocale.pt_br,
               looping: true,
+              confirmText: "Confirmar",
               cancelText: "Cancelar",
-              confirmText: "Confirmar"
             );
             if (selectedDate != null) {
               onDateSelected(selectedDate);

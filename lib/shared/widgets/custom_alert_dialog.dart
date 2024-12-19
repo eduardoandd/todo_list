@@ -49,6 +49,9 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius:BorderRadius.circular(20),
+      ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -119,7 +122,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                       children: [
                         Icon(Icons.notifications_rounded,
                             size: 30,
-                            color: notification ? Colors.blue : Colors.grey),
+                            color: notification ? Colors.purple : Colors.grey),
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text("Adicionar notificação"),

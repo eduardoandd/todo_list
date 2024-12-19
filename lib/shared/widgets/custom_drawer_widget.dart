@@ -29,7 +29,7 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
               style: TextStyle(color: Colors.white70, fontSize: 18),
             ),
             decoration: BoxDecoration(
-                color: Colors.purple.shade300,
+                color: Colors.purple.shade600,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
@@ -87,7 +87,6 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
               fontSize: 18,
               color: Colors.purple.shade600,
               fontWeight: FontWeight.w400
-              
             ),),
           ),
 

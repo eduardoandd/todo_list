@@ -46,6 +46,7 @@ void main() async {
     print(err);
   });
   print(fcmToken);
+  MaterialApp();
 
   runApp(const MainApp());
 }
