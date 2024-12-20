@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 
 class TaskModel {
   String description = "";
   bool completed = false;
   DateTime date = DateTime.now();
   int day = 0;
-  bool? notify;
+  bool notify = false;
   DateTime? notificationTime;
+  bool fullDay = true;
   DateTime? taskTime;
   DateTime creationDate = DateTime.now();
   DateTime alterationDate = DateTime.now();
@@ -18,9 +20,10 @@ class TaskModel {
         required this.completed,
         required this.date,
         required this.day,
-        this.notify,
-        this.notificationTime,
+        required this.fullDay,
         this.taskTime,
+        required this.notify,
+        this.notificationTime,
         required this.userId
       });
 
@@ -29,11 +32,14 @@ class TaskModel {
     completed = json['completed'];
     date = (json['date'] as Timestamp).toDate();
     day = (json['day']);
-    notify = json['notify'];
+    fullDay = json['fullDay'] ?? true;
+    taskTime = json['taskTime'] != null
+    ? (json['taskTime'] as Timestamp).toDate()
+    : null;
+    notify = json['notify'] ?? true;
     notificationTime = json['notificationTime'] != null
     ? (json['notificationTime'] as Timestamp).toDate()
     : null;
-    taskTime = json['taskTime'];
     creationDate =(json['creationDate'] as Timestamp).toDate();
     alterationDate =(json['alterationDate'] as Timestamp).toDate();
     userId = json['userId'];
@@ -45,9 +51,10 @@ class TaskModel {
     data['completed'] = this.completed;
     data['date'] = this.date;
     data['day'] = this.day;
+    data['fullDay'] = this.fullDay;
+    data['taskTime'] = this.taskTime;
     data['notify'] = this.notify;
     data['notificationTime'] = this.notificationTime;
-    data['taskTime'] = this.taskTime;
     data['creationDate'] = Timestamp.fromDate(this.creationDate);
     data['alterationDate'] = Timestamp.fromDate(this.alterationDate);
     data['userId'] = this.userId;

@@ -10,12 +10,19 @@ class CustomAlertDialog extends StatefulWidget {
   final String title;
   final String confirmText;
   final Function onConfirm;
+  final bool notify;
+  final bool fullDay;
+  final Function(bool) onfullDayChanged;
+  final Function(Time) onTaskTimeChanged;
 
   CustomAlertDialog({
     required this.controller,
     required this.title,
     required this.confirmText,
     required this.onConfirm,
+    required this.notify,
+    required this.fullDay,
+    required this.onfullDayChanged, required this.onTaskTimeChanged
   });
 
   @override
@@ -25,7 +32,8 @@ class CustomAlertDialog extends StatefulWidget {
 class _CustomAlertDialogState extends State<CustomAlertDialog> {
   bool notification = false;
   Time _time = Time(hour: 12, minute: 0);
-  String selectedTime = "Adicionar horário";
+  String selectedTime = "Dia inteiro";
+  Time? taskTime_;
 
   void _showTimePicker() {
     Navigator.of(context).push(
@@ -35,8 +43,14 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
         onChange: (Time newTime) {
           setState(() {
             _time = newTime;
+            taskTime_ = _time;
             selectedTime =
                 "${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}";
+              
+              if(taskTime_ != null){
+                widget.onTaskTimeChanged(taskTime_!);
+              }
+
           });
         },
         iosStylePicker: false,
@@ -50,7 +64,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius:BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20),
       ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,11 +84,20 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
           ),
           const SizedBox(height: 20),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: _showTimePicker,
+                  onTap: (){
+                    _showTimePicker();
+                    if(_time != null){
+                      setState(() {
+                        widget.onfullDayChanged(false);
+                       
+                      });
+                    }
+                  },
                   borderRadius: BorderRadius.circular(50),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -89,6 +112,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(selectedTime),
                         ),
+                        
                       ],
                     ),
                   ),
@@ -97,7 +121,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
             ],
           ),
           const SizedBox(height: 10),
-          Row(
+          selectedTime !="Dia inteiro" ? Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Material(
@@ -145,7 +169,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                   ),
                 ),
             ],
-          ),
+          ) : Container(),
         ],
       ),
       actions: [

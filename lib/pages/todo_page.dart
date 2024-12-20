@@ -10,6 +10,7 @@ import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_list/shared/widgets/custom_appbar_widget.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 
 import '../model/todo_model.dart';
 import '../repositories/todo_repositories.dart';
@@ -30,12 +31,12 @@ class _TodoPageState extends State<TodoPage> {
   DateTime pickDate = DateTime.now();
   DateFormat dateFormat = DateFormat('dd/MM/yyyy');
   bool _initialized = false;
-  bool notification = false;
+  bool notify = false;
   DateTime? notificationTime;
-  bool taskTime = false;
-  DateTime? taskHour;
+  bool fullDay = true;
   bool watchIcon = false;
   bool borderIsVisible = false;
+  DateTime taskTime = DateTime.now();
 
   PageController _pageController = PageController(initialPage: 1);
 
@@ -91,9 +92,8 @@ class _TodoPageState extends State<TodoPage> {
         onPressed: () async {
           descriptionController.text = "";
           notificationTime = null;
-          notification = false;
-          taskTime = false;
-          taskHour = null;
+          notify = false;
+          fullDay = true;
           watchIcon = false;
           borderIsVisible = false;
           showDialog(
@@ -110,11 +110,27 @@ class _TodoPageState extends State<TodoPage> {
                           completed: false,
                           date: pickDate,
                           userId: userId,
-                          day: pickDate.day);
+                          taskTime: taskTime,
+                          day: pickDate.day,
+                          fullDay: fullDay,
+                          notify: notify);
                       await db.collection('tasks').add(task.toJson());
                       getTasks();
                     },
                     confirmText: "Salvar",
+                    fullDay: fullDay,
+                    notify: notify,
+                    onfullDayChanged: (value) {
+                      setState(() {
+                        fullDay = value;
+                      });
+                    },
+                    onTaskTimeChanged: (value) {
+                      setState(() {
+                        taskTime = DateTime(pickDate.year, pickDate.month,
+                            pickDate.day, value.hour, value.minute);
+                      });
+                    },
                   );
                 },
               );
@@ -200,11 +216,12 @@ class _TodoPageState extends State<TodoPage> {
                                           color: task.completed
                                               ? Colors.purple.shade50
                                               : Colors.white,
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                           boxShadow: [
                                             BoxShadow(
-                                                color:
-                                                    Colors.grey.withOpacity(0.2),
+                                                color: Colors.grey
+                                                    .withOpacity(0.2),
                                                 spreadRadius: 1,
                                                 blurRadius: 5,
                                                 offset: Offset(0, 3))
@@ -257,10 +274,27 @@ class _TodoPageState extends State<TodoPage> {
                                                       await db
                                                           .collection('tasks')
                                                           .doc(e.id)
-                                                          .update(task.toJson());
+                                                          .update(
+                                                              task.toJson());
                                                       getTasks();
                                                     },
                                                     confirmText: "Salvar",
+                                                    fullDay: fullDay,
+                                                    notify: notify,
+                                                    onfullDayChanged:
+                                                        (bool value) {
+                                                      setState(() {
+                                                        fullDay = value;
+                                                      });
+                                                    },
+                                                    onTaskTimeChanged: (value) {
+                                                      taskTime = DateTime(
+                                                          pickDate.year,
+                                                          pickDate.month,
+                                                          pickDate.day,
+                                                          value.hour,
+                                                          value.minute);
+                                                    },
                                                   );
                                                 },
                                               );
