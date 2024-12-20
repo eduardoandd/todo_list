@@ -37,6 +37,7 @@ class _TodoPageState extends State<TodoPage> {
   bool watchIcon = false;
   bool borderIsVisible = false;
   DateTime taskTime = DateTime.now();
+  DateTime notifyTime = DateTime.now();
 
   PageController _pageController = PageController(initialPage: 1);
 
@@ -111,6 +112,7 @@ class _TodoPageState extends State<TodoPage> {
                           date: pickDate,
                           userId: userId,
                           taskTime: taskTime,
+                          notificationTime:notificationTime ,
                           day: pickDate.day,
                           fullDay: fullDay,
                           notify: notify);
@@ -130,6 +132,12 @@ class _TodoPageState extends State<TodoPage> {
                         taskTime = DateTime(pickDate.year, pickDate.month,
                             pickDate.day, value.hour, value.minute);
                       });
+                    },
+                    onNotifyTimeChanged: (value) {
+                      var hour = taskTime.hour - value.hour;
+                      var minute = taskTime.minute - value.minute;
+                      notificationTime = DateTime(pickDate.year, pickDate.month,
+                          pickDate.day, hour, minute);
                     },
                   );
                 },
@@ -288,6 +296,15 @@ class _TodoPageState extends State<TodoPage> {
                                                       });
                                                     },
                                                     onTaskTimeChanged: (value) {
+                                                      taskTime = DateTime(
+                                                          pickDate.year,
+                                                          pickDate.month,
+                                                          pickDate.day,
+                                                          value.hour,
+                                                          value.minute);
+                                                    },
+                                                    onNotifyTimeChanged:
+                                                        (value) {
                                                       taskTime = DateTime(
                                                           pickDate.year,
                                                           pickDate.month,

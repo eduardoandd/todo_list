@@ -1,3 +1,4 @@
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
 
 class AlertDialogNotificationWidget extends StatefulWidget {
@@ -15,6 +16,8 @@ class _AlertDialogNotificationWidgetState extends State<AlertDialogNotificationW
     "Personalizado",
   ];
   String? selectedOption;
+  Time? notifyTime;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,18 @@ class _AlertDialogNotificationWidgetState extends State<AlertDialogNotificationW
                     value: option,
                     groupValue: selectedOption,
                     onChanged: (value) {
+                      if(value == '30 minutos antes'){
+                        notifyTime = Time(hour: 0, minute: 30);
+                      }
+                      else if(value == "1 hora antes"){
+                        notifyTime = Time(hour: 1, minute:0 );
+
+                      }
+                      else if(value == "2 horas antes"){
+                        notifyTime = Time(hour: 2, minute:0 );
+                      }
                       setState(() {
+                        notifyTime;
                         selectedOption = value;
                       });
                     },
@@ -51,7 +65,7 @@ class _AlertDialogNotificationWidgetState extends State<AlertDialogNotificationW
           child: const Text('Cancelar'),
         ),
         ElevatedButton(
-          onPressed: () => Navigator.pop(context, selectedOption),
+          onPressed: () => Navigator.pop(context, {"time":notifyTime, "option":selectedOption}),
           child: const Text('Confirmar'),
         ),
       ],

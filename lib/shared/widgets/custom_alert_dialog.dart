@@ -14,6 +14,7 @@ class CustomAlertDialog extends StatefulWidget {
   final bool fullDay;
   final Function(bool) onfullDayChanged;
   final Function(Time) onTaskTimeChanged;
+  final Function(Time) onNotifyTimeChanged;
 
   CustomAlertDialog({
     required this.controller,
@@ -22,7 +23,7 @@ class CustomAlertDialog extends StatefulWidget {
     required this.onConfirm,
     required this.notify,
     required this.fullDay,
-    required this.onfullDayChanged, required this.onTaskTimeChanged
+    required this.onfullDayChanged, required this.onTaskTimeChanged, required this.onNotifyTimeChanged
   });
 
   @override
@@ -31,9 +32,14 @@ class CustomAlertDialog extends StatefulWidget {
 
 class _CustomAlertDialogState extends State<CustomAlertDialog> {
   bool notification = false;
+  bool fullDay_ = true;
   Time _time = Time(hour: 12, minute: 0);
   String selectedTime = "Dia inteiro";
   Time? taskTime_;
+  Time? notifyTime_;
+  String notifyText = "Adicionar notificação";
+  
+
 
   void _showTimePicker() {
     Navigator.of(context).push(
@@ -46,11 +52,9 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
             taskTime_ = _time;
             selectedTime =
                 "${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}";
-              
               if(taskTime_ != null){
                 widget.onTaskTimeChanged(taskTime_!);
               }
-
           });
         },
         iosStylePicker: false,
@@ -94,6 +98,8 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                     if(_time != null){
                       setState(() {
                         widget.onfullDayChanged(false);
+                        fullDay_ = false;
+                        
                        
                       });
                     }
@@ -103,10 +109,10 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        const Icon(
+                         Icon(
                           Icons.access_time_rounded,
                           size: 30,
-                          color: Colors.grey,
+                          color: fullDay_ ? Colors.grey : Colors.purple ,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -128,7 +134,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () async {
-                    final result = await showDialog<String>(
+                    final result = await showDialog<Map<String, dynamic>>(
                         context: context,
                         builder: (BuildContext bc) {
                           return AlertDialogNotificationWidget();
@@ -136,6 +142,9 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                     if (result != null) {
                       setState(() {
                         notification = true;
+                        notifyTime_ = result["time"];
+                        widget.onNotifyTimeChanged(notifyTime_!);
+                        notifyText = result["option"].toString();
                       });
                     }
                   },
@@ -149,7 +158,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                             color: notification ? Colors.purple : Colors.grey),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text("Adicionar notificação"),
+                          child: Text(notifyText),
                         ),
                       ],
                     ),
@@ -161,6 +170,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                   onTap: () {
                     setState(() {
                       notification = false;
+                      notifyText = "Adicionar notificação";
                     });
                   },
                   child: Container(
