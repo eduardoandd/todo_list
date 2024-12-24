@@ -91,7 +91,7 @@ class _TodoPageState extends State<TodoPage> {
       drawer: CustomDrawerWidget(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple.shade600,
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white,),
         onPressed: () async {
           descriptionController.text = "";
           notificationTime = null;
@@ -225,19 +225,19 @@ class _TodoPageState extends State<TodoPage> {
                                     key: Key(e.id),
                                     child: Container(
                                       margin: EdgeInsets.all(8),
-                                      // padding: EdgeInsets.all(12),
+                                     
                                       decoration: BoxDecoration(
                                           color: task.completed
                                               ? (Theme.of(context).brightness ==
                                                       Brightness.dark
                                                   ? Colors.grey
-                                                      .shade800 // Cor suave para o tema escuro
+                                                      .shade800
                                                   : Colors.purple
-                                                      .shade50) // Cor clara para o tema claro
+                                                      .shade50)
                                               : (Theme.of(context).brightness ==
                                                       Brightness.dark
                                                   ? Colors.grey
-                                                      .shade900 // Cor suave para o tema escuro
+                                                      .shade900
                                                   : Colors.white),
                                           borderRadius: BorderRadius.circular(20),
                                           boxShadow: [
@@ -258,7 +258,7 @@ class _TodoPageState extends State<TodoPage> {
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.w500,
                                                     color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black
-                                                    // decoration:  task.completed ? TextDecoration.lineThrough : TextDecoration.none
+                                                   
                                                     ),
                                               ),
                                             ),

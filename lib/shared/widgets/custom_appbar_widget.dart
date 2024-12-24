@@ -4,11 +4,13 @@ import 'package:flutter_holo_date_picker/date_picker.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:intl/intl.dart';
 
-class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBarWidget extends StatelessWidget
+    implements PreferredSizeWidget {
   final DateTime pickDate;
   final Function(DateTime) onDateSelected;
 
-  const CustomAppBarWidget({Key? key, required this.pickDate, required this.onDateSelected})
+  const CustomAppBarWidget(
+      {Key? key, required this.pickDate, required this.onDateSelected})
       : super(key: key);
 
   @override
@@ -16,15 +18,15 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
     DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
     return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.primary,  
-      elevation: 2,  
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      elevation: 2,
       title: Center(
         child: Text(
           dateFormat.format(pickDate),
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: Colors.white,  
+            color: Colors.white,
           ),
         ),
       ),
@@ -32,15 +34,17 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
         IconButton(
           icon: Icon(
             Icons.calendar_today,
-            color: Colors.white,  
+            color: Colors.white,
           ),
           onPressed: () async {
             final selectedDate = await DatePicker.showSimpleDatePicker(
               context,
               titleText: "",
+              backgroundColor: Theme.of(context).colorScheme.background,
               initialDate: pickDate,
               firstDate: DateTime(2020),
               lastDate: DateTime(2090),
+              textColor: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
               dateFormat: "dd-MMMM-yyyy",
               locale: DateTimePickerLocale.pt_br,
               looping: true,
