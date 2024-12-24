@@ -34,9 +34,9 @@ class NotificationHelper {
       color: Colors.purple, 
       largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'), 
       styleInformation: BigTextStyleInformation(
-        '<b>$body</b>',
+        body,
         contentTitle: title,
-        summaryText: 'Lembrete da sua tarefa!',
+        // summaryText: 'Lembrete da sua tarefa!',
       ),
     );
 

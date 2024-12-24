@@ -22,16 +22,18 @@ class _AlertDialogNotificationWidgetState extends State<AlertDialogNotificationW
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.background,  
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12), 
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), 
-      backgroundColor: Colors.white, 
+  
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: options
               .map((option) => RadioListTile<String>(
+                activeColor: Theme.of(context).colorScheme.primary,
                     title: Text(
                       option,
                       style: const TextStyle(fontSize: 14), 

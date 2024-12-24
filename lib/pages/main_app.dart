@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list/pages/splash_screen/splash_screen_page.dart';
 import 'package:todo_list/pages/todo_page.dart';
+import 'package:todo_list/themes/dark_theme.dart';
+import 'package:todo_list/themes/light_theme.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({Key? key}) : super(key: key);
@@ -10,12 +12,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        
-
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: const SplashScreen(),
     );
   }

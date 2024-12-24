@@ -44,6 +44,8 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
   void _showTimePicker() {
     Navigator.of(context).push(
       showPicker(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        accentColor:Theme.of(context).colorScheme.primary,  
         context: context,
         value: _time,
         onChange: (Time newTime) {
@@ -67,6 +69,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.background,  
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),

@@ -85,7 +85,7 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
             padding: const EdgeInsets.all(16.0),
             child: Text("Versão 1.0", style: TextStyle(
               fontSize: 18,
-              color: Colors.purple.shade600,
+              color:  Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.purple.shade600 ,
               fontWeight: FontWeight.w400
             ),),
           ),

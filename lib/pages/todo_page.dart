@@ -79,6 +79,7 @@ class _TodoPageState extends State<TodoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBarWidget(
         pickDate: pickDate,
         onDateSelected: (selectedDate) {
@@ -113,7 +114,7 @@ class _TodoPageState extends State<TodoPage> {
                           date: pickDate,
                           userId: userId,
                           taskTime: taskTime,
-                          notificationTime:notificationTime ,
+                          notificationTime: notificationTime,
                           day: pickDate.day,
                           fullDay: fullDay,
                           notify: notify);
@@ -121,9 +122,8 @@ class _TodoPageState extends State<TodoPage> {
                       getTasks();
                       NotificationHelper.scheduledNotification(
                           'Hoje às ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
-                          '${task.description}', 
-                          notificationTime!
-                        );
+                          '${task.description}',
+                          notificationTime!);
                     },
                     confirmText: "Salvar",
                     fullDay: fullDay,
@@ -228,10 +228,18 @@ class _TodoPageState extends State<TodoPage> {
                                       // padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                           color: task.completed
-                                              ? Colors.purple.shade50
-                                              : Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
+                                              ? (Theme.of(context).brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.grey
+                                                      .shade800 // Cor suave para o tema escuro
+                                                  : Colors.purple
+                                                      .shade50) // Cor clara para o tema claro
+                                              : (Theme.of(context).brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.grey
+                                                      .shade900 // Cor suave para o tema escuro
+                                                  : Colors.white),
+                                          borderRadius: BorderRadius.circular(20),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: Colors.grey
@@ -247,10 +255,11 @@ class _TodoPageState extends State<TodoPage> {
                                               child: Text(
                                                 task.description.toString(),
                                                 style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w500,
-                                                  // decoration:  task.completed ? TextDecoration.lineThrough : TextDecoration.none
-                                                ),
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black
+                                                    // decoration:  task.completed ? TextDecoration.lineThrough : TextDecoration.none
+                                                    ),
                                               ),
                                             ),
                                           ],

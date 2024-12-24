@@ -16,7 +16,7 @@ class CustomAppBarWidget extends StatelessWidget implements PreferredSizeWidget 
     DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
     return AppBar(
-      // backgroundColor: Colors.purple.shade600,  
+      backgroundColor: Theme.of(context).colorScheme.primary,  
       elevation: 2,  
       title: Center(
         child: Text(
