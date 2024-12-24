@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:todo_list/notifications/notification_helper.dart';
 import 'package:todo_list/pages/main_app.dart';
 import 'package:todo_list/pages/todo_page.dart';
 
@@ -11,6 +12,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationHelper.init();
   var documentDirectory =
       await path_provider.getApplicationDocumentsDirectory();
   Hive.init(documentDirectory.path);
@@ -46,7 +48,7 @@ void main() async {
     print(err);
   });
   print(fcmToken);
-  MaterialApp();
+  
 
   runApp(const MainApp());
 }

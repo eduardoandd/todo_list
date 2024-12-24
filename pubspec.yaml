@@ -44,6 +44,8 @@ dependencies:
   flutter_holo_date_picker: ^1.1.1
   # google_fonts: ^4.0.4
   fluid_dialog: ^1.1.1
+  flutter_local_notifications: ^17.0.0
+  timezone: ^0.9.2
 
 
 

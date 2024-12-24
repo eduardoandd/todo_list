@@ -6,6 +6,7 @@ import 'package:flutter_holo_date_picker/i18n/date_picker_i18n.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/model/task_model.dart';
+import 'package:todo_list/notifications/notification_helper.dart';
 import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_list/shared/widgets/custom_appbar_widget.dart';
@@ -118,6 +119,11 @@ class _TodoPageState extends State<TodoPage> {
                           notify: notify);
                       await db.collection('tasks').add(task.toJson());
                       getTasks();
+                      NotificationHelper.scheduledNotification(
+                          'Hoje às ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
+                          '${task.description}', 
+                          notificationTime!
+                        );
                     },
                     confirmText: "Salvar",
                     fullDay: fullDay,
