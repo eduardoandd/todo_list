@@ -32,7 +32,7 @@ class NotificationHelper {
       priority: Priority.high,
       ticker: "Nova tarefa adicionada!",
       color: Colors.purple, 
-      largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'), 
+      // largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'), 
       styleInformation: BigTextStyleInformation(
         body,
         contentTitle: title,
@@ -57,10 +57,10 @@ class NotificationHelper {
 
     await _notification.zonedSchedule(
       0, 
-      title, // Notification title
-      body, // Notification body
-      notifyTime, // Scheduled time
-      notificationDetails, // Details of notification
+      title, 
+      body, 
+      notifyTime, 
+      notificationDetails, 
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

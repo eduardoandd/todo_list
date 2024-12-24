@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list/services/dark_mode_service.dart';
 
 class CustomDrawerWidget extends StatefulWidget {
   const CustomDrawerWidget({Key? key}) : super(key: key);
@@ -12,8 +14,10 @@ class CustomDrawerWidget extends StatefulWidget {
 }
 
 class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
+
   @override
   Widget build(BuildContext context) {
+    var darkModeService = Provider.of<DarkModeService>(context);
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,13 +53,27 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
           Divider(),
           ListTile(
             leading: Icon(
-              Icons.brush,
+              Icons.dark_mode,
               size: 30,
               color: Colors.purple.shade600,
             ),
-            title: Text("Temas",
+            title: Text("Modo Escuro",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-            onTap: () {},
+            trailing: Consumer<DarkModeService>(
+              builder: (_,darkModeService,widget) {
+                return Switch(
+                  value: darkModeService.darkMode,
+                  onChanged: (bool value) {
+                    setState(() {
+                      darkModeService.darkMode = value;
+                    });
+                  },
+                  activeColor: Colors.purple.shade600,
+                  inactiveThumbColor: Colors.purple.shade200,
+                  inactiveTrackColor: Colors.purple.shade100,
+                );
+              }
+            ),
           ),
           Divider(),
           ListTile(
@@ -85,12 +103,12 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
             padding: const EdgeInsets.all(16.0),
             child: Text("Versão 1.0", style: TextStyle(
               fontSize: 18,
-              color:  Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.purple.shade600 ,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.purple.shade600,
               fontWeight: FontWeight.w400
             ),),
           ),
-
-
         ],
       ),
     );
