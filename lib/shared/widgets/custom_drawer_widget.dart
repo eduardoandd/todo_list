@@ -21,6 +21,8 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
   Widget build(BuildContext context) {
     var darkModeService = Provider.of<DarkModeService>(context);
     return Drawer(
+      backgroundColor: Theme.of(context).colorScheme.background,
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
