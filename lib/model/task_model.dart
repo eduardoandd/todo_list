@@ -7,9 +7,10 @@ class TaskModel {
   DateTime date = DateTime.now();
   int day = 0;
   bool notify = false;
-  DateTime? notificationTime;
   bool fullDay = true;
+  DateTime? notificationTime;
   DateTime? taskTime;
+  String? notifyOption = '';
   DateTime creationDate = DateTime.now();
   DateTime alterationDate = DateTime.now();
   String userId = '';
@@ -21,9 +22,10 @@ class TaskModel {
         required this.date,
         required this.day,
         required this.fullDay,
-        this.taskTime,
         required this.notify,
+        this.taskTime,
         this.notificationTime,
+        this.notifyOption,
         required this.userId
       });
 
@@ -36,6 +38,7 @@ class TaskModel {
     taskTime = json['taskTime'] != null
     ? (json['taskTime'] as Timestamp).toDate()
     : null;
+    notifyOption = json['notifyOption'] ?? '';
     notify = json['notify'] ?? true;
     notificationTime = json['notificationTime'] != null
     ? (json['notificationTime'] as Timestamp).toDate()
@@ -52,6 +55,7 @@ class TaskModel {
     data['date'] = this.date;
     data['day'] = this.day;
     data['fullDay'] = this.fullDay;
+    data['notifyOption'] = this.notifyOption;
     data['taskTime'] = this.taskTime;
     data['notify'] = this.notify;
     data['notificationTime'] = this.notificationTime;

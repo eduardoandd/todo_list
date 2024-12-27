@@ -1,3 +1,4 @@
+import 'package:day_night_time_picker/lib/state/time.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
@@ -5,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/model/task_model.dart';
 import 'package:todo_list/notifications/notification_helper.dart';
+import 'package:todo_list/shared/widgets/alert_dialog_widget.dart';
 import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_list/shared/widgets/custom_appbar_widget.dart';
@@ -28,9 +30,14 @@ class _TodoPageState extends State<TodoPage> {
   bool fullDay = true;
   bool watchIcon = false;
   bool borderIsVisible = false;
-  DateTime taskTime = DateTime.now();
-  DateTime notifyTime = DateTime.now();
+  DateTime? taskTime;
+  DateTime? notifyTime;
+  String notifyOption = "";
   PageController _pageController = PageController(initialPage: 1);
+
+  // Time? testeTaskTime;
+  // Time? testeNotificationTime;
+  
 
   final db = FirebaseFirestore.instance;
   String userId = '';
@@ -41,6 +48,57 @@ class _TodoPageState extends State<TodoPage> {
     _initialized = true;
     loadUser();
   }
+
+    void onSetTime(DateTime? selectedTaskTime, DateTime? selectedNotifyTime, String selectedNotifyOption) {
+      taskTime = selectedTaskTime;
+      notifyTime = selectedNotifyTime;
+      notifyOption = selectedNotifyOption;
+
+      print("Tarefa confirmada:");
+      print("taskTime: $taskTime");
+      print("notifyTime: $notifyTime");
+      print("notifyOption: $notifyOption");
+    }
+
+    void onConfirm(bool value) async{
+      if(value == false){
+        var task =TaskModel(
+          description: descriptionController.text, 
+          completed: false, 
+          date: pickDate, 
+          day: pickDate.day, 
+          fullDay: value,
+          taskTime: taskTime,
+          notificationTime: notifyTime,
+          notifyOption:notifyOption,
+          notify: true, 
+          userId: userId
+        );
+        await db.collection('tasks').add(task.toJson());
+        // NotificationHelper.scheduledNotification(
+        //       'Hoje às ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
+        //       '${task.description}',
+        //       notifyTime!,
+        //     );
+        
+      }
+      else{
+        var task =TaskModel(
+          description: descriptionController.text, 
+          completed: false, 
+          date: pickDate, 
+          day: pickDate.day, 
+          fullDay: value,
+          taskTime: null,
+          notificationTime: null,
+          notifyOption:notifyOption,
+          notify: true, 
+          userId: userId
+        );
+        await db.collection('tasks').add(task.toJson());
+      }
+    }
+
 
   loadUser() async {
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -88,63 +146,12 @@ class _TodoPageState extends State<TodoPage> {
             builder: (BuildContext bc) {
               return StatefulBuilder(
                 builder: (context, setState) {
-                  return CustomAlertDialog(
-                    title: "Adicionar tarefa",
-                    controller: descriptionController,
-                    onConfirm: () async {
-                      var aux = DateTime.now().add(Duration(seconds: 5));
-                      if (notificationTime == null) {
-                        var task = TaskModel(
-                            description: descriptionController.text,
-                            completed: false,
-                            date: pickDate,
-                            userId: userId,
-                            taskTime: taskTime,
-                            notificationTime: aux,
-                            day: pickDate.day,
-                            fullDay: fullDay,
-                            notify: notify);
-                          await db.collection('tasks').add(task.toJson());
-
-                      } else {
-                        var task = TaskModel(
-                            description: descriptionController.text,
-                            completed: false,
-                            date: pickDate,
-                            userId: userId,
-                            taskTime: taskTime,
-                            notificationTime: notificationTime,
-                            day: pickDate.day,
-                            fullDay: fullDay,
-                            notify: notify);
-                        await db.collection('tasks').add(task.toJson());
-                        NotificationHelper.scheduledNotification(
-                            'Hoje às ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
-                            '${task.description}',
-                            notificationTime!);
-                      }
-                    },
-                    confirmText: "Salvar",
-                    fullDay: fullDay,
-                    notify: notify,
-                    onfullDayChanged: (value) {
-                      setState(() {
-                        fullDay = value;
-                      });
-                    },
-                    onTaskTimeChanged: (value) {
-                      setState(() {
-                        taskTime = DateTime(pickDate.year, pickDate.month,
-                            pickDate.day, value.hour, value.minute);
-                      });
-                    },
-                    onNotifyTimeChanged: (value) {
-                      var hour = taskTime.hour - value.hour;
-                      var minute = taskTime.minute - value.minute;
-                      notificationTime = DateTime(pickDate.year, pickDate.month,
-                          pickDate.day, hour, minute);
-                    },
+                  return AlertDialogWidget(
+                    title: 'Adicionar tarefa', 
+                    description: descriptionController, 
+                    onSetTime: onSetTime, pickdate: pickDate, onConfirm: onConfirm,
                   );
+                 
                 },
               );
             },
