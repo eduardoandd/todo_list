@@ -29,7 +29,6 @@ class PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        // height: 20,
         decoration: BoxDecoration(
             gradient: gradient,
             borderRadius: BorderRadius.circular(16),
@@ -64,7 +63,6 @@ class PlanCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
                 textAlign: TextAlign.center,
-                // overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: 10),
               Padding(

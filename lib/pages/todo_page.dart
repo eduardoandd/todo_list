@@ -1,8 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_holo_date_picker/date_picker.dart';
-import 'package:flutter_holo_date_picker/i18n/date_picker_i18n.dart';
+
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/model/task_model.dart';
@@ -10,11 +8,6 @@ import 'package:todo_list/notifications/notification_helper.dart';
 import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_list/shared/widgets/custom_appbar_widget.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:day_night_time_picker/day_night_time_picker.dart';
-
-import '../model/todo_model.dart';
-import '../repositories/todo_repositories.dart';
 import '../shared/widgets/custom_drawer_widget.dart';
 
 class TodoPage extends StatefulWidget {
@@ -25,8 +18,6 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  late TodoRepository todoRepository;
-  var _tasks = <ToDoModel>[];
   var descriptionController = TextEditingController();
   bool justNotCompleted = false;
   DateTime pickDate = DateTime.now();
@@ -39,7 +30,6 @@ class _TodoPageState extends State<TodoPage> {
   bool borderIsVisible = false;
   DateTime taskTime = DateTime.now();
   DateTime notifyTime = DateTime.now();
-
   PageController _pageController = PageController(initialPage: 1);
 
   final db = FirebaseFirestore.instance;
@@ -48,9 +38,7 @@ class _TodoPageState extends State<TodoPage> {
   @override
   void initState() {
     super.initState();
-    getTasks();
     _initialized = true;
-
     loadUser();
   }
 
@@ -63,17 +51,10 @@ class _TodoPageState extends State<TodoPage> {
     setState(() {});
   }
 
-  void getTasks() async {
-    todoRepository = await TodoRepository.loadData();
-    _tasks = todoRepository.get(justNotCompleted, pickDate);
-    setState(() {});
-  }
-
   void updateDate(bool nextDay) {
     setState(() {
       pickDate = pickDate.add(Duration(days: nextDay ? 1 : -1));
     });
-    getTasks();
   }
 
   @override
@@ -91,7 +72,10 @@ class _TodoPageState extends State<TodoPage> {
       drawer: CustomDrawerWidget(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple.shade600,
-        child: const Icon(Icons.add, color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () async {
           descriptionController.text = "";
           notificationTime = null;
@@ -108,22 +92,37 @@ class _TodoPageState extends State<TodoPage> {
                     title: "Adicionar tarefa",
                     controller: descriptionController,
                     onConfirm: () async {
-                      var task = TaskModel(
-                          description: descriptionController.text,
-                          completed: false,
-                          date: pickDate,
-                          userId: userId,
-                          taskTime: taskTime,
-                          notificationTime: notificationTime,
-                          day: pickDate.day,
-                          fullDay: fullDay,
-                          notify: notify);
-                      await db.collection('tasks').add(task.toJson());
-                      getTasks();
-                      NotificationHelper.scheduledNotification(
-                          'Hoje às ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
-                          '${task.description}',
-                          notificationTime!);
+                      var aux = DateTime.now().add(Duration(seconds: 5));
+                      if (notificationTime == null) {
+                        var task = TaskModel(
+                            description: descriptionController.text,
+                            completed: false,
+                            date: pickDate,
+                            userId: userId,
+                            taskTime: taskTime,
+                            notificationTime: aux,
+                            day: pickDate.day,
+                            fullDay: fullDay,
+                            notify: notify);
+                          await db.collection('tasks').add(task.toJson());
+
+                      } else {
+                        var task = TaskModel(
+                            description: descriptionController.text,
+                            completed: false,
+                            date: pickDate,
+                            userId: userId,
+                            taskTime: taskTime,
+                            notificationTime: notificationTime,
+                            day: pickDate.day,
+                            fullDay: fullDay,
+                            notify: notify);
+                        await db.collection('tasks').add(task.toJson());
+                        NotificationHelper.scheduledNotification(
+                            'Hoje às ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
+                            '${task.description}',
+                            notificationTime!);
+                      }
                     },
                     confirmText: "Salvar",
                     fullDay: fullDay,
@@ -184,7 +183,6 @@ class _TodoPageState extends State<TodoPage> {
                         value: justNotCompleted,
                         onChanged: (bool value) async {
                           justNotCompleted = value;
-                          getTasks();
                         },
                         activeColor: Colors.purple.shade600,
                       ),
@@ -220,26 +218,22 @@ class _TodoPageState extends State<TodoPage> {
                                           .collection('tasks')
                                           .doc(e.id)
                                           .delete();
-                                      getTasks();
                                     },
                                     key: Key(e.id),
                                     child: Container(
                                       margin: EdgeInsets.all(8),
-                                     
                                       decoration: BoxDecoration(
                                           color: task.completed
                                               ? (Theme.of(context).brightness ==
                                                       Brightness.dark
-                                                  ? Colors.grey
-                                                      .shade800
-                                                  : Colors.purple
-                                                      .shade50)
+                                                  ? Colors.grey.shade800
+                                                  : Colors.purple.shade50)
                                               : (Theme.of(context).brightness ==
                                                       Brightness.dark
-                                                  ? Colors.grey
-                                                      .shade900
+                                                  ? Colors.grey.shade900
                                                   : Colors.white),
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: Colors.grey
@@ -257,9 +251,11 @@ class _TodoPageState extends State<TodoPage> {
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.w500,
-                                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black
-                                                   
-                                                    ),
+                                                    color: Theme.of(context)
+                                                                .brightness ==
+                                                            Brightness.dark
+                                                        ? Colors.white
+                                                        : Colors.black),
                                               ),
                                             ),
                                           ],
@@ -271,7 +267,6 @@ class _TodoPageState extends State<TodoPage> {
                                                 .collection("tasks")
                                                 .doc(e.id)
                                                 .update(task.toJson());
-                                            getTasks();
                                           },
                                           value: task.completed,
                                           activeColor: Colors.purple.shade500,
@@ -299,7 +294,6 @@ class _TodoPageState extends State<TodoPage> {
                                                           .doc(e.id)
                                                           .update(
                                                               task.toJson());
-                                                      getTasks();
                                                     },
                                                     confirmText: "Salvar",
                                                     fullDay: fullDay,

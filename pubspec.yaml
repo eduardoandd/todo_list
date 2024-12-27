@@ -51,6 +51,7 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   flutter_swiper_plus: ^2.0.4
   profile_photo: ^1.0.3
+  awesome_snackbar_content: ^0.1.2
 
 
 

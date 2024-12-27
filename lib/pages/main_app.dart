@@ -9,7 +9,6 @@ import 'package:todo_list/themes/light_theme.dart';
 class MainApp extends StatelessWidget {
   const MainApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -24,9 +23,8 @@ class MainApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: lightTheme,
             darkTheme: darkTheme,
-            themeMode: darkModeService.darkMode
-                ? ThemeMode.dark
-                : ThemeMode.light,
+            themeMode:
+                darkModeService.darkMode ? ThemeMode.dark : ThemeMode.light,
             home: const SplashScreen(),
           );
         },

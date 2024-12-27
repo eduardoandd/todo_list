@@ -1,11 +1,6 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:profile_photo/profile_photo.dart';
 import 'package:todo_list/shared/widgets/card_donation_widget.dart';
-
-
-
 
 class DonationPage extends StatefulWidget {
   @override
@@ -29,12 +24,14 @@ class _DonationPageState extends State<DonationPage> {
     });
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Theme.of(context).colorScheme.background,
-      appBar: AppBar(title: Text("Página de doação"), backgroundColor: Theme.of(context).colorScheme.primary,),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: AppBar(
+        title: Text("Página de doação"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
       body: Column(
         children: [
           Padding(
@@ -68,7 +65,8 @@ class _DonationPageState extends State<DonationPage> {
                                 borderRadius: BorderRadius.circular(12),
                                 gradient: LinearGradient(
                                   colors: [
-                                    Color.fromARGB(53, 0, 0, 0).withOpacity(0.1),
+                                    Color.fromARGB(53, 0, 0, 0)
+                                        .withOpacity(0.1),
                                     Color.fromARGB(76, 0, 0, 0)
                                   ],
                                   begin: Alignment.topLeft,
@@ -82,11 +80,9 @@ class _DonationPageState extends State<DonationPage> {
                                   "Eu sou completamente viciado em café, mas, olha, essa história de 'me ajuda a comprar um café' é só uma brincadeira! Na verdade, essa página é só uma forma de me incentivar a continuar perseguindo o meu sonho. Se você puder ajudar, ótimo! Se não, sem problemas! O importante é que o apoio, de qualquer forma, já é um grande incentivo para seguir em frente. Então, se você se sentir à vontade, fique à vontade para contribuir, mas saiba que o mais valioso mesmo é a sua energia positiva! Vamos juntos!",
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.white, 
-                                    fontWeight: FontWeight
-                                        .w400, 
-                                    height:
-                                        1.4, 
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.4,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),

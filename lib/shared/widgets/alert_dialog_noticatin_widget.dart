@@ -13,7 +13,7 @@ class _AlertDialogNotificationWidgetState extends State<AlertDialogNotificationW
     "30 minutos antes",
     "1 hora antes",
     "2 horas antes",
-    "Personalizado",
+    "Não exibir notificações",
   ];
   String? selectedOption;
   Time? notifyTime;
@@ -51,6 +51,13 @@ class _AlertDialogNotificationWidgetState extends State<AlertDialogNotificationW
                       else if(value == "2 horas antes"){
                         notifyTime = Time(hour: 2, minute:0 );
                       }
+                      else if(value == 'Não exibir notificações'){
+                        notifyTime = null;
+                      }
+                      else{
+                        notifyTime = Time(hour: 0,minute: 30);
+                      }
+                      
                       setState(() {
                         notifyTime;
                         selectedOption = value;
