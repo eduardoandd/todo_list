@@ -9,13 +9,15 @@ import 'package:flutter/src/widgets/framework.dart';
 
 class AlertDialogEditWidget extends StatefulWidget {
   final TextEditingController description;
-  final Function(DateTime?)? onSetTime;
+  final Function(DateTime?, DateTime?, String? )? onSetTime;
   final DateTime? taskTimeSelected;
   final DateTime pickDate;
   final  Function() onConfirm;
+  final String? optionNotify;
 
 
-  const AlertDialogEditWidget({Key? key, required this.description, this.taskTimeSelected, this.onSetTime, required this.pickDate, required this.onConfirm}) : super(key: key);
+
+  const AlertDialogEditWidget({Key? key, required this.description, this.taskTimeSelected, this.onSetTime, required this.pickDate, required this.onConfirm, required this.optionNotify}) : super(key: key);
 
   @override
   State<AlertDialogEditWidget> createState() => _AlertDialogEditWidgetState();
@@ -25,6 +27,15 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
   Time _time = Time(hour: 12, minute: 0);
   bool fullDay = true;
   Time? taskTime;
+  DateTime? notifyDateTime;
+  List<String> options = [
+    "30 minutos antes",
+    "1 hora antes",
+    "2 horas antes",
+    "Não exibir notificações",
+  ];
+  String notifyOption = '30 minutos antes';
+
 
 
 
@@ -37,6 +48,7 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
     if(fullDay == false){
       setState(() {
         taskTime = Time(hour: widget.taskTimeSelected!.hour, minute: widget.taskTimeSelected!.minute);
+        notifyOption = widget.optionNotify ?? "30 minutos antes";
       });
     }
     
@@ -58,11 +70,7 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
             taskTime = _time;
             fullDay = false;
 
-            // selectedTime =
-            //     "${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}";
-            // fullDay = false;
-            // notifyTime =
-            //     Time(hour: taskTime!.hour, minute: (taskTime!.minute - 30));
+            
           });
         },
         iosStylePicker: false,
@@ -119,7 +127,107 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
                 
               )
             ],
+          ),
+          SizedBox(height: 10,),
+          fullDay == false ?
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () async{
+                    final result = await showDialog(context: context, builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor:Theme.of(context).colorScheme.background,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        content: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: options.map((option) => RadioListTile(
+                              value: option,
+                              title: Text(option, style: TextStyle(fontSize: 14),), 
+                              groupValue: notifyOption, 
+                              onChanged: (value){
+                                if(value == '30 minutos antes'){
+                                  notifyDateTime = DateTime(
+                                    widget.pickDate.year,
+                                    widget.pickDate.month,
+                                    widget.pickDate.day,
+                                    taskTime!.hour,
+                                    (taskTime!.minute-30)
+                                  );
+                                }
+                                else if (value =="1 hora antes") {
+                                  notifyDateTime = DateTime(
+                                    widget.pickDate.year,
+                                    widget.pickDate.month,
+                                    widget.pickDate.day,
+                                    (taskTime!.hour-1),
+                                    taskTime!.minute
+                                  );
+                                }
+                                else if (value =="2 horas antes") {
+                                  notifyDateTime = DateTime(
+                                    widget.pickDate.year,
+                                    widget.pickDate.month,
+                                    widget.pickDate.day,
+                                    (taskTime!.hour-2),
+                                    taskTime!.minute
+                                  );
+                                }
+                                else if (value =='Não exibir notificações') {
+                                  notifyDateTime = null;
+                                }
+                                else{
+                                  notifyDateTime = DateTime(
+                                    widget.pickDate.year,
+                                    widget.pickDate.month,
+                                    widget.pickDate.day,
+                                    taskTime!.hour,
+                                    (taskTime!.minute-30)
+                                  );
+                                } 
+                                setState(() {
+                                  notifyOption =
+                                      value.toString();
+                                  Navigator.pop(context);
+                                });
+
+                              }
+                            )).toList()
+
+                          ),
+                        ),
+                      );
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(50),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Icon(
+                        Icons.notifications_rounded,
+                        size: 30,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(notifyOption),
+                      )
+                      
+                    ]),
+
+                  ),
+                ),
+              )
+            ],
+
           )
+
+          : Container()
         ],
       ),
       actions: [
@@ -128,8 +236,8 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
           onPressed: (){
             if(fullDay == false){
               DateTime finalTaskTime = DateTime(widget.pickDate.year,widget.pickDate.month,widget.pickDate.day,taskTime!.hour,taskTime!.minute);
-              
-              widget.onSetTime!(finalTaskTime);
+
+              widget.onSetTime!(finalTaskTime, notifyDateTime,notifyOption);
             }
             widget.onConfirm();
             Navigator.pop(context);

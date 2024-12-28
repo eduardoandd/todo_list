@@ -66,8 +66,11 @@ class _TodoPageState extends State<TodoPage> {
       print("notifyOption: $notifyOption");
     }
 
-    void onSetTimeEdit(DateTime? selectedTaskTimeEdit) {
+    void onSetTimeEdit(DateTime? selectedTaskTimeEdit, DateTime? notifyTimeEdit_, String? optionEdit) {
       taskTimeEdit = selectedTaskTimeEdit;
+      notifyTimeEdit = notifyTimeEdit_;
+      notifyOptionEdit=optionEdit ?? "30 minutos antes";
+
     }
 
     
@@ -303,10 +306,13 @@ class _TodoPageState extends State<TodoPage> {
                                             builder: (BuildContext bc) {
                                               return StatefulBuilder(
                                                 builder: (context, setState) {
-                                                  return taskTimeEdit != null ?
+                                                  return task.taskTime != null || taskTimeEdit != null ?
                                                    AlertDialogEditWidget(
                                                     description: descriptionController,
-                                                    taskTimeSelected: task.taskTime, onSetTime:onSetTimeEdit, pickDate: pickDate, onConfirm: () async{ 
+                                                    taskTimeSelected: task.taskTime, 
+                                                    onSetTime:onSetTimeEdit, 
+                                                    optionNotify: task.notifyOption,
+                                                    pickDate: pickDate, onConfirm: () async{ 
                                                       var taskEdit = TaskModel(
                                                         description: descriptionController.text, 
                                                         completed: false, 
@@ -322,7 +328,7 @@ class _TodoPageState extends State<TodoPage> {
                                                           .doc(e.id)
                                                           .update(
                                                               taskEdit.toJson());
-                                                     },
+                                                     }
                                                   )
                                                   :
                                                   AlertDialogEditWidget(
@@ -341,7 +347,7 @@ class _TodoPageState extends State<TodoPage> {
                                                           .doc(e.id)
                                                           .update(
                                                               taskEdit.toJson());
-                                                     },
+                                                     }, optionNotify: task.notifyOption,
                                                   );
 
                                                 },
