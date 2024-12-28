@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/model/task_model.dart';
 import 'package:todo_list/notifications/notification_helper.dart';
+import 'package:todo_list/shared/widgets/alert_dialog_edit_widget.dart';
 import 'package:todo_list/shared/widgets/alert_dialog_widget.dart';
 import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,6 +35,11 @@ class _TodoPageState extends State<TodoPage> {
   DateTime? notifyTime;
   String notifyOption = "";
   PageController _pageController = PageController(initialPage: 1);
+  DateTime? taskTimeEdit;
+  DateTime? notifyTimeEdit;
+  String notifyOptionEdit = "";
+
+
 
   // Time? testeTaskTime;
   // Time? testeNotificationTime;
@@ -59,6 +65,12 @@ class _TodoPageState extends State<TodoPage> {
       print("notifyTime: $notifyTime");
       print("notifyOption: $notifyOption");
     }
+
+    void onSetTimeEdit(DateTime? selectedTaskTimeEdit) {
+      taskTimeEdit = selectedTaskTimeEdit;
+    }
+
+    
 
     void onConfirm(bool value) async{
       if(value == false){
@@ -99,6 +111,9 @@ class _TodoPageState extends State<TodoPage> {
       }
     }
 
+    
+
+   
 
   loadUser() async {
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -149,7 +164,7 @@ class _TodoPageState extends State<TodoPage> {
                   return AlertDialogWidget(
                     title: 'Adicionar tarefa', 
                     description: descriptionController, 
-                    onSetTime: onSetTime, pickdate: pickDate, onConfirm: onConfirm,
+                    onSetTime: onSetTime, pickdate: pickDate, onConfirm: onConfirm
                   );
                  
                 },
@@ -281,54 +296,54 @@ class _TodoPageState extends State<TodoPage> {
                                         onLongPress: () {
                                           descriptionController.text =
                                               task.description.toString();
-                                          notificationTime =
-                                              task.notificationTime;
+                                          
+                                          
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext bc) {
                                               return StatefulBuilder(
                                                 builder: (context, setState) {
-                                                  return CustomAlertDialog(
-                                                    title: "Editar tarefa",
-                                                    controller:
-                                                        descriptionController,
-                                                    onConfirm: () async {
-                                                      task.description =
-                                                          descriptionController
-                                                              .text;
+                                                  return taskTimeEdit != null ?
+                                                   AlertDialogEditWidget(
+                                                    description: descriptionController,
+                                                    taskTimeSelected: task.taskTime, onSetTime:onSetTimeEdit, pickDate: pickDate, onConfirm: () async{ 
+                                                      var taskEdit = TaskModel(
+                                                        description: descriptionController.text, 
+                                                        completed: false, 
+                                                        date: pickDate, 
+                                                        day: pickDate.day,
+                                                        taskTime: taskTimeEdit, 
+                                                        fullDay: false, 
+                                                        notify: false, 
+                                                        userId: task.userId
+                                                      );
                                                       await db
                                                           .collection('tasks')
                                                           .doc(e.id)
                                                           .update(
-                                                              task.toJson());
-                                                    },
-                                                    confirmText: "Salvar",
-                                                    fullDay: fullDay,
-                                                    notify: notify,
-                                                    onfullDayChanged:
-                                                        (bool value) {
-                                                      setState(() {
-                                                        fullDay = value;
-                                                      });
-                                                    },
-                                                    onTaskTimeChanged: (value) {
-                                                      taskTime = DateTime(
-                                                          pickDate.year,
-                                                          pickDate.month,
-                                                          pickDate.day,
-                                                          value.hour,
-                                                          value.minute);
-                                                    },
-                                                    onNotifyTimeChanged:
-                                                        (value) {
-                                                      taskTime = DateTime(
-                                                          pickDate.year,
-                                                          pickDate.month,
-                                                          pickDate.day,
-                                                          value.hour,
-                                                          value.minute);
-                                                    },
+                                                              taskEdit.toJson());
+                                                     },
+                                                  )
+                                                  :
+                                                  AlertDialogEditWidget(
+                                                    description: descriptionController, pickDate: pickDate, onConfirm: () async { 
+                                                      var taskEdit = TaskModel(
+                                                        description: descriptionController.text, 
+                                                        completed: false, 
+                                                        date: pickDate, 
+                                                        day: pickDate.day,
+                                                        fullDay: false, 
+                                                        notify: false, 
+                                                        userId: task.userId
+                                                      );
+                                                      await db
+                                                          .collection('tasks')
+                                                          .doc(e.id)
+                                                          .update(
+                                                              taskEdit.toJson());
+                                                     },
                                                   );
+
                                                 },
                                               );
                                             },

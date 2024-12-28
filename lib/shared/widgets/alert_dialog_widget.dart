@@ -9,6 +9,7 @@ class AlertDialogWidget extends StatefulWidget {
   final Function(DateTime?, DateTime?, String) onSetTime;
   final  Function(bool) onConfirm;
   final DateTime pickdate;
+  
 
   const AlertDialogWidget(
       {Key? key,
@@ -263,24 +264,28 @@ class _AlertDialogWidgetState extends State<AlertDialogWidget> {
           ),
           TextButton(
             onPressed: () {
-              if(notifyOption == '30 minutos antes'){
+              if(fullDay !=true){
+                if(notifyOption == '30 minutos antes'){
                 notifyTime = Time(hour: taskTime!.hour,minute:(taskTime!.minute -30));
-                                                  notifyDateTime = DateTime(
-                                                    widget.pickdate.year,
-                                                    widget.pickdate.month,
-                                                    widget.pickdate.day,
-                                                    notifyTime!.hour,
-                                                    notifyTime!.minute
-                                                  );
-                                                  taskDateTime = DateTime(
-                                                    widget.pickdate.year,
-                                                    widget.pickdate.month,
-                                                    widget.pickdate.day,
-                                                    taskTime!.hour,
-                                                    taskTime!.minute
-                                                  );
+                  notifyDateTime = DateTime(
+                    widget.pickdate.year,
+                    widget.pickdate.month,
+                    widget.pickdate.day,
+                    notifyTime!.hour,
+                    notifyTime!.minute
+                  );
+                  taskDateTime = DateTime(
+                    widget.pickdate.year,
+                    widget.pickdate.month,
+                    widget.pickdate.day,
+                    taskTime!.hour,
+                    taskTime!.minute
+                  );
+
+                }
 
               }
+              
 
               widget.onSetTime(taskDateTime, notifyDateTime, notifyOption);
               widget.onConfirm(fullDay);
