@@ -85,11 +85,15 @@ class _TodoPageState extends State<TodoPage> {
           notify: true,
           userId: userId);
       await db.collection('tasks').add(task.toJson());
-      NotificationHelper.scheduledNotification(
+
+      if(notifyTime != null){
+        NotificationHelper.scheduledNotification(
         'Hoje às ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
         '${task.description}',
         notifyTime!,
-      );
+        );
+      }
+      
     } else {
       var task = TaskModel(
           description: descriptionController.text,
@@ -332,13 +336,15 @@ class _TodoPageState extends State<TodoPage> {
                                                                 .doc(e.id)
                                                                 .update(taskEdit
                                                                     .toJson());
-
-                                                            // NotificationHelper
-                                                            //     .scheduledNotification(
-                                                            //   'Hoje às ${taskEdit.taskTime?.hour}${taskEdit.taskTime?.minute != null ? ":" + taskEdit.taskTime!.minute.toString().padLeft(2, '0') : ''}',
-                                                            //   '${taskEdit.description}',
-                                                            //   notifyTimeEdit!,
-                                                            // );
+                                                            if(notifyTimeEdit != null){
+                                                              NotificationHelper
+                                                                .scheduledNotification(
+                                                              'Hoje às ${taskEdit.taskTime?.hour}${taskEdit.taskTime?.minute != null ? ":" + taskEdit.taskTime!.minute.toString().padLeft(2, '0') : ''}',
+                                                              '${taskEdit.description}',
+                                                              notifyTimeEdit!,
+                                                              );
+                                                            }
+                                                            
                                                           })
                                                       : AlertDialogEditWidget(
                                                           description:

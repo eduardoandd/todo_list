@@ -49,6 +49,8 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
       setState(() {
         taskTime = Time(hour: widget.taskTimeSelected!.hour, minute: widget.taskTimeSelected!.minute);
         notifyOption = widget.optionNotify ?? "30 minutos antes";
+        
+
       });
     }
     
@@ -69,6 +71,37 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
             _time = newTime;
             taskTime = _time;
             fullDay = false;
+
+            if(notifyOption == '30 minutos antes'){
+              notifyDateTime = DateTime(
+                  widget.pickDate.year,
+                  widget.pickDate.month,
+                  widget.pickDate.day,
+                  taskTime!.hour,
+                  (taskTime!.minute-30)
+              );
+            }
+            else if (notifyOption =="1 hora antes") {
+              notifyDateTime = DateTime(
+                widget.pickDate.year,
+                widget.pickDate.month,
+                widget.pickDate.day,
+                (taskTime!.hour-1),
+                taskTime!.minute
+              );
+            }
+            else if (notifyOption =="2 horas antes") {
+              notifyDateTime = DateTime(
+                widget.pickDate.year,
+                widget.pickDate.month,
+                widget.pickDate.day,
+                (taskTime!.hour-2),
+                taskTime!.minute
+              );
+            }
+            
+
+            
 
             
           });
