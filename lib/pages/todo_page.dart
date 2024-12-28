@@ -78,6 +78,8 @@ class _TodoPageState extends State<TodoPage> {
           completed: false,
           date: pickDate,
           day: pickDate.day,
+          month: pickDate.month,
+          year: pickDate.year,
           fullDay: value,
           taskTime: taskTime,
           notificationTime: notifyTime,
@@ -100,6 +102,8 @@ class _TodoPageState extends State<TodoPage> {
           completed: false,
           date: pickDate,
           day: pickDate.day,
+          month: pickDate.month,
+          year: pickDate.year,
           fullDay: value,
           taskTime: null,
           notificationTime: null,
@@ -215,11 +219,15 @@ class _TodoPageState extends State<TodoPage> {
                               .where('completed', isEqualTo: false)
                               .where('userId', isEqualTo: userId)
                               .where('day', isEqualTo: pickDate.day)
+                              .where('month', isEqualTo: pickDate.month)
+                              .where('year', isEqualTo: pickDate.year)
                               .snapshots()
                           : db
                               .collection("tasks")
                               .where('userId', isEqualTo: userId)
                               .where('day', isEqualTo: pickDate.day)
+                              .where('month', isEqualTo: pickDate.month)
+                              .where('year', isEqualTo: pickDate.year)
                               .snapshots(),
                       builder: (context, snapshot) {
                         return !snapshot.hasData
@@ -320,6 +328,8 @@ class _TodoPageState extends State<TodoPage> {
                                                                 date: pickDate,
                                                                 day: pickDate
                                                                     .day,
+                                                                month: pickDate.month,
+                                                                year: pickDate.year,
                                                                 notifyOption:
                                                                     notifyOptionEdit,
                                                                 notificationTime:
@@ -360,6 +370,10 @@ class _TodoPageState extends State<TodoPage> {
                                                                 date: pickDate,
                                                                 day: pickDate
                                                                     .day,
+                                                                month: pickDate
+                                                                    .month,
+                                                                year: pickDate
+                                                                    .year,
                                                                 fullDay: false,
                                                                 notify: false,
                                                                 userId: task

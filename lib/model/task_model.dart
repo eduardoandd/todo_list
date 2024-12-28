@@ -6,6 +6,8 @@ class TaskModel {
   bool completed = false;
   DateTime date = DateTime.now();
   int day = 0;
+  int month = 0;
+  int year = 0;
   bool notify = false;
   bool fullDay = true;
   DateTime? notificationTime;
@@ -21,6 +23,8 @@ class TaskModel {
         required this.completed,
         required this.date,
         required this.day,
+        required this.month,
+        required this.year,
         required this.fullDay,
         required this.notify,
         this.taskTime,
@@ -34,6 +38,8 @@ class TaskModel {
     completed = json['completed'];
     date = (json['date'] as Timestamp).toDate();
     day = (json['day']);
+    month = (json['month']);
+    year = (json['year']);
     fullDay = json['fullDay'] ?? true;
     taskTime = json['taskTime'] != null
     ? (json['taskTime'] as Timestamp).toDate()
@@ -54,6 +60,8 @@ class TaskModel {
     data['completed'] = this.completed;
     data['date'] = this.date;
     data['day'] = this.day;
+    data['month'] = this.month;
+    data['year'] = this.year;
     data['fullDay'] = this.fullDay;
     data['notifyOption'] = this.notifyOption;
     data['taskTime'] = this.taskTime;
