@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:profile_photo/profile_photo.dart';
 import 'package:todo_list/shared/widgets/card_donation_widget.dart';
@@ -23,83 +26,98 @@ class _DonationPageState extends State<DonationPage> {
       valueController.text = value.toString();
     });
   }
+  final db = FirebaseFirestore.instance;
+
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Text("Página de doação"),
+        title: Text("Doação"),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: ProfilePhoto(
-              totalWidth: 150,
-              cornerRadius: 80,
-              color: Colors.purple,
-              image: AssetImage('assets/eu.jpg'),
-              badgeAlignment: Alignment.bottomLeft,
-              badgeSize: 60,
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Column(
-                      children: [
-                        Dialog(
-                          backgroundColor: Colors.transparent,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(450),
-                            child:
-                                Image.asset('assets/eu.jpg', fit: BoxFit.cover),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: ProfilePhoto(
+                totalWidth: 150,
+                cornerRadius: 80,
+                color: Colors.purple,
+                image: AssetImage('assets/eu.jpg'),
+                badgeAlignment: Alignment.bottomLeft,
+                badgeSize: 60,
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Column(
+                        children: [
+                          Container(
+                            // backgroundColor: Colors.transparent,
+                            width: MediaQuery.of(context).size.width * .7,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(450),
+                              child: Image.asset('assets/eu.jpg',
+                                  fit: BoxFit.cover),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(53, 0, 0, 0)
-                                        .withOpacity(0.1),
-                                    Color.fromARGB(76, 0, 0, 0)
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              padding: EdgeInsets.all(10),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: Text(
-                                  "Eu sou completamente viciado em café, mas, olha, essa história de 'me ajuda a comprar um café' é só uma brincadeira! Na verdade, essa página é só uma forma de me incentivar a continuar perseguindo o meu sonho. Se você puder ajudar, ótimo! Se não, sem problemas! O importante é que o apoio, de qualquer forma, já é um grande incentivo para seguir em frente. Então, se você se sentir à vontade, fique à vontade para contribuir, mas saiba que o mais valioso mesmo é a sua energia positiva! Vamos juntos!",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.4,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Expanded(
+                              child: Container(
+                                height: MediaQuery.of(context).size.width * .7,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  gradient: LinearGradient(
+                                    colors: isDarkMode
+                                        ? [
+                                            Color.fromARGB(255, 155, 39, 176),
+                                            Color.fromARGB(140, 155, 39, 176).withOpacity(0.5),
+                                          ]
+                                        : [
+                                            Color.fromARGB(53, 0, 0, 0)
+                                                .withOpacity(0.1),
+                                            Color.fromARGB(76, 0, 0, 0)
+                                          ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
-                                  textAlign: TextAlign.center,
+                                ),
+                                padding: EdgeInsets.all(10),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      "Eu sou completamente viciado em café, mas, olha, essa história de 'me ajuda a comprar um café' é só uma brincadeira! Na verdade, essa página é só uma forma de me incentivar a continuar perseguindo o meu sonho. Se você puder ajudar, ótimo! Se não, sem problemas! O importante é que o apoio, de qualquer forma, já é um grande incentivo para seguir em frente. Então, se você se sentir à vontade, fique à vontade para contribuir, mas saiba que o mais valioso mesmo é a sua energia positiva! Vamos juntos!",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.4,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-          SizedBox(height: 15),
-          CardDonationWidget(),
-        ],
+            SizedBox(height: 15),
+            CardDonationWidget(),
+          ],
+        ),
       ),
     );
   }

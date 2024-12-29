@@ -69,6 +69,7 @@ class _AlertDialogWidgetState extends State<AlertDialogWidget> {
 
   Widget build(BuildContext context) {
     return AlertDialog(
+      
         backgroundColor: Theme.of(context).colorScheme.background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
@@ -105,7 +106,7 @@ class _AlertDialogWidgetState extends State<AlertDialogWidget> {
                           size: 30,
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left: 8),
                           child: Text(selectedTime),
                         ),
                       ],
@@ -237,14 +238,14 @@ class _AlertDialogWidgetState extends State<AlertDialogWidget> {
                         },
                         borderRadius: BorderRadius.circular(50),
                         child: Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left: 8),
                           child: Row(children: [
                             Icon(
                               Icons.notifications_rounded,
                               size: 30,
                             ),
                             Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.only(left: 8),
                               child: Text(notifyOption),
                             )
                           ]),

@@ -132,6 +132,7 @@ class _TodoPageState extends State<TodoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBarWidget(
         pickDate: pickDate,
@@ -203,7 +204,10 @@ class _TodoPageState extends State<TodoPage> {
                       Switch(
                         value: justNotCompleted,
                         onChanged: (bool value) async {
-                          justNotCompleted = value;
+                          setState(() {
+                            
+                            justNotCompleted = value;
+                          });
                         },
                         activeColor: Colors.purple.shade600,
                       ),
@@ -303,92 +307,98 @@ class _TodoPageState extends State<TodoPage> {
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext bc) {
-                                              return StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return task.taskTime !=
-                                                              null ||
-                                                          taskTimeEdit != null
-                                                      ? AlertDialogEditWidget(
-                                                          description:
-                                                              descriptionController,
-                                                          taskTimeSelected:
-                                                              task.taskTime,
-                                                          onSetTime:
-                                                              onSetTimeEdit,
-                                                          optionNotify:
-                                                              task.notifyOption,
-                                                          pickDate: pickDate,
-                                                          onConfirm: () async {
-                                                            var taskEdit = TaskModel(
-                                                                description:
-                                                                    descriptionController
-                                                                        .text,
-                                                                completed:
-                                                                    false,
-                                                                date: pickDate,
-                                                                day: pickDate
-                                                                    .day,
-                                                                month: pickDate.month,
-                                                                year: pickDate.year,
-                                                                notifyOption:
-                                                                    notifyOptionEdit,
-                                                                notificationTime:
-                                                                    notifyTimeEdit,
-                                                                taskTime:
-                                                                    taskTimeEdit,
-                                                                fullDay: false,
-                                                                notify: false,
-                                                                userId: task
-                                                                    .userId);
-                                                            await db
-                                                                .collection(
-                                                                    'tasks')
-                                                                .doc(e.id)
-                                                                .update(taskEdit
-                                                                    .toJson());
-                                                            if(notifyTimeEdit != null){
-                                                              NotificationHelper
-                                                                .scheduledNotification(
-                                                              'Hoje às ${taskEdit.taskTime?.hour}${taskEdit.taskTime?.minute != null ? ":" + taskEdit.taskTime!.minute.toString().padLeft(2, '0') : ''}',
-                                                              '${taskEdit.description}',
-                                                              notifyTimeEdit!,
-                                                              );
-                                                            }
-                                                            
-                                                          })
-                                                      : AlertDialogEditWidget(
-                                                          description:
-                                                              descriptionController,
-                                                          pickDate: pickDate,
-                                                          onConfirm: () async {
-                                                            var taskEdit = TaskModel(
-                                                                description:
-                                                                    descriptionController
-                                                                        .text,
-                                                                completed:
-                                                                    false,
-                                                                date: pickDate,
-                                                                day: pickDate
-                                                                    .day,
-                                                                month: pickDate
-                                                                    .month,
-                                                                year: pickDate
-                                                                    .year,
-                                                                fullDay: false,
-                                                                notify: false,
-                                                                userId: task
-                                                                    .userId);
-                                                            await db
-                                                                .collection(
-                                                                    'tasks')
-                                                                .doc(e.id)
-                                                                .update(taskEdit
-                                                                    .toJson());
-                                                          },
-                                                          optionNotify:
-                                                              task.notifyOption,
-                                                        );
-                                                },
+                                              return Builder(
+                                                builder: (context) {
+                                                  double height = MediaQuery.of(context).size.height;
+                                                  double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+                                                  return StatefulBuilder(
+                                                    builder: (context, setState) {
+                                                      return task.taskTime !=
+                                                                  null ||
+                                                              taskTimeEdit != null
+                                                          ? AlertDialogEditWidget(
+                                                              description:
+                                                                  descriptionController,
+                                                              taskTimeSelected:
+                                                                  task.taskTime,
+                                                              onSetTime:
+                                                                  onSetTimeEdit,
+                                                              optionNotify:
+                                                                  task.notifyOption,
+                                                              pickDate: pickDate,
+                                                              onConfirm: () async {
+                                                                var taskEdit = TaskModel(
+                                                                    description:
+                                                                        descriptionController
+                                                                            .text,
+                                                                    completed:
+                                                                        false,
+                                                                    date: pickDate,
+                                                                    day: pickDate
+                                                                        .day,
+                                                                    month: pickDate.month,
+                                                                    year: pickDate.year,
+                                                                    notifyOption:
+                                                                        notifyOptionEdit,
+                                                                    notificationTime:
+                                                                        notifyTimeEdit,
+                                                                    taskTime:
+                                                                        taskTimeEdit,
+                                                                    fullDay: false,
+                                                                    notify: false,
+                                                                    userId: task
+                                                                        .userId);
+                                                                await db
+                                                                    .collection(
+                                                                        'tasks')
+                                                                    .doc(e.id)
+                                                                    .update(taskEdit
+                                                                        .toJson());
+                                                                if(notifyTimeEdit != null){
+                                                                  NotificationHelper
+                                                                    .scheduledNotification(
+                                                                  'Hoje às ${taskEdit.taskTime?.hour}${taskEdit.taskTime?.minute != null ? ":" + taskEdit.taskTime!.minute.toString().padLeft(2, '0') : ''}',
+                                                                  '${taskEdit.description}',
+                                                                  notifyTimeEdit!,
+                                                                  );
+                                                                }
+                                                                
+                                                              })
+                                                          : AlertDialogEditWidget(
+                                                              description:
+                                                                  descriptionController,
+                                                              pickDate: pickDate,
+                                                              onConfirm: () async {
+                                                                var taskEdit = TaskModel(
+                                                                    description:
+                                                                        descriptionController
+                                                                            .text,
+                                                                    completed:
+                                                                        false,
+                                                                    date: pickDate,
+                                                                    day: pickDate
+                                                                        .day,
+                                                                    month: pickDate
+                                                                        .month,
+                                                                    year: pickDate
+                                                                        .year,
+                                                                    fullDay: false,
+                                                                    notify: false,
+                                                                    userId: task
+                                                                        .userId);
+                                                                await db
+                                                                    .collection(
+                                                                        'tasks')
+                                                                    .doc(e.id)
+                                                                    .update(taskEdit
+                                                                        .toJson());
+                                                              },
+                                                              optionNotify:
+                                                                  task.notifyOption,
+                                                            );
+                                                    },
+                                                  );
+                                                }
                                               );
                                             },
                                           );
