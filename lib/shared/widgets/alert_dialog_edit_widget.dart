@@ -9,15 +9,21 @@ import 'package:flutter/src/widgets/framework.dart';
 
 class AlertDialogEditWidget extends StatefulWidget {
   final TextEditingController description;
-  final Function(DateTime?, DateTime?, String? )? onSetTime;
+  final Function(DateTime?, DateTime?, String?)? onSetTime;
   final DateTime? taskTimeSelected;
   final DateTime pickDate;
-  final  Function() onConfirm;
+  final Function() onConfirm;
   final String? optionNotify;
 
-
-
-  const AlertDialogEditWidget({Key? key, required this.description, this.taskTimeSelected, this.onSetTime, required this.pickDate, required this.onConfirm, required this.optionNotify}) : super(key: key);
+  const AlertDialogEditWidget({
+    Key? key,
+    required this.description,
+    this.taskTimeSelected,
+    this.onSetTime,
+    required this.pickDate,
+    required this.onConfirm,
+    required this.optionNotify,
+  }) : super(key: key);
 
   @override
   State<AlertDialogEditWidget> createState() => _AlertDialogEditWidgetState();
@@ -36,27 +42,18 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
   ];
   String notifyOption = '30 minutos antes';
 
-
-
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     widget.taskTimeSelected == null ? fullDay = true : fullDay = false;
-    
-    if(fullDay == false){
+
+    if (fullDay == false) {
       setState(() {
         taskTime = Time(hour: widget.taskTimeSelected!.hour, minute: widget.taskTimeSelected!.minute);
         notifyOption = widget.optionNotify ?? "30 minutos antes";
-        
-
       });
     }
-    
-
   }
-
 
   @override
   void _showTimePicker() {
@@ -72,38 +69,31 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
             taskTime = _time;
             fullDay = false;
 
-            if(notifyOption == '30 minutos antes'){
-              notifyDateTime = DateTime(
-                  widget.pickDate.year,
-                  widget.pickDate.month,
-                  widget.pickDate.day,
-                  taskTime!.hour,
-                  (taskTime!.minute-30)
-              );
-            }
-            else if (notifyOption =="1 hora antes") {
+            if (notifyOption == '30 minutos antes') {
               notifyDateTime = DateTime(
                 widget.pickDate.year,
                 widget.pickDate.month,
                 widget.pickDate.day,
-                (taskTime!.hour-1),
-                taskTime!.minute
+                taskTime!.hour,
+                (taskTime!.minute - 30),
               );
-            }
-            else if (notifyOption =="2 horas antes") {
+            } else if (notifyOption == "1 hora antes") {
               notifyDateTime = DateTime(
                 widget.pickDate.year,
                 widget.pickDate.month,
                 widget.pickDate.day,
-                (taskTime!.hour-2),
-                taskTime!.minute
+                (taskTime!.hour - 1),
+                taskTime!.minute,
+              );
+            } else if (notifyOption == "2 horas antes") {
+              notifyDateTime = DateTime(
+                widget.pickDate.year,
+                widget.pickDate.month,
+                widget.pickDate.day,
+                (taskTime!.hour - 2),
+                taskTime!.minute,
               );
             }
-            
-
-            
-
-            
           });
         },
         iosStylePicker: false,
@@ -112,6 +102,7 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -128,158 +119,207 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
             controller: widget.description,
             decoration: InputDecoration(hintText: "Digite algo"),
           ),
-          SizedBox(height: 20,),
+          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap:(){
+                  onTap: () {
                     _showTimePicker();
                   },
                   borderRadius: BorderRadius.circular(50),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(left:8.0),
                     child: Row(
                       children: [
                         Icon(
                           Icons.access_time_rounded,
-                          color: fullDay ?Colors.grey : Colors.purple,
+                          color: fullDay ? Colors.grey : Colors.purple,
                           size: 30,
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(fullDay? 'Dia inteiro' : taskTime.toString().replaceAll('TimeOfDay(', '').replaceAll(')', '')),
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            fullDay ? 'Dia inteiro' : taskTime.toString().replaceAll('TimeOfDay(', '').replaceAll(')', ''),
+                          ),
                         ),
                       ],
                     ),
-
                   ),
                 ),
-                
-              )
+              ),
             ],
           ),
-          SizedBox(height: 10,),
-          fullDay == false ?
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () async{
-                    final result = await showDialog(context: context, builder: (BuildContext context) {
-                      return AlertDialog(
-                        backgroundColor:Theme.of(context).colorScheme.background,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: options.map((option) => RadioListTile(
-                              value: option,
-                              title: Text(option, style: TextStyle(fontSize: 14),), 
-                              groupValue: notifyOption, 
-                              onChanged: (value){
-                                if(value == '30 minutos antes'){
-                                  notifyDateTime = DateTime(
-                                    widget.pickDate.year,
-                                    widget.pickDate.month,
-                                    widget.pickDate.day,
-                                    taskTime!.hour,
-                                    (taskTime!.minute-30)
-                                  );
-                                }
-                                else if (value =="1 hora antes") {
-                                  notifyDateTime = DateTime(
-                                    widget.pickDate.year,
-                                    widget.pickDate.month,
-                                    widget.pickDate.day,
-                                    (taskTime!.hour-1),
-                                    taskTime!.minute
-                                  );
-                                }
-                                else if (value =="2 horas antes") {
-                                  notifyDateTime = DateTime(
-                                    widget.pickDate.year,
-                                    widget.pickDate.month,
-                                    widget.pickDate.day,
-                                    (taskTime!.hour-2),
-                                    taskTime!.minute
-                                  );
-                                }
-                                else if (value =='Não exibir notificações') {
-                                  notifyDateTime = null;
-                                }
-                                else{
-                                  notifyDateTime = DateTime(
-                                    widget.pickDate.year,
-                                    widget.pickDate.month,
-                                    widget.pickDate.day,
-                                    taskTime!.hour,
-                                    (taskTime!.minute-30)
-                                  );
-                                } 
-                                setState(() {
-                                  notifyOption =
-                                      value.toString();
-                                  Navigator.pop(context);
-                                });
-
-                              }
-                            )).toList()
-
+          SizedBox(height: 10),
+          fullDay == false
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () async {
+                          final result = await showDialog(context: context, builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: Theme.of(context).colorScheme.background,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: options
+                                      .map(
+                                        (option) => RadioListTile(
+                                          activeColor: Theme.of(context).colorScheme.primary,
+                                          value: option,
+                                          title: Text(
+                                            option,
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                          groupValue: notifyOption,
+                                          onChanged: (value) {
+                                            if (value == '30 minutos antes') {
+                                              notifyDateTime = DateTime(
+                                                widget.pickDate.year,
+                                                widget.pickDate.month,
+                                                widget.pickDate.day,
+                                                taskTime!.hour,
+                                                (taskTime!.minute - 30),
+                                              );
+                                            } else if (value == "1 hora antes") {
+                                              notifyDateTime = DateTime(
+                                                widget.pickDate.year,
+                                                widget.pickDate.month,
+                                                widget.pickDate.day,
+                                                (taskTime!.hour - 1),
+                                                taskTime!.minute,
+                                              );
+                                            } else if (value == "2 horas antes") {
+                                              notifyDateTime = DateTime(
+                                                widget.pickDate.year,
+                                                widget.pickDate.month,
+                                                widget.pickDate.day,
+                                                (taskTime!.hour - 2),
+                                                taskTime!.minute,
+                                              );
+                                            } else if (value == 'Não exibir notificações') {
+                                              notifyDateTime = null;
+                                            } else {
+                                              notifyDateTime = DateTime(
+                                                widget.pickDate.year,
+                                                widget.pickDate.month,
+                                                widget.pickDate.day,
+                                                taskTime!.hour,
+                                                (taskTime!.minute - 30),
+                                              );
+                                            }
+                                            setState(() {
+                                              notifyOption = value.toString();
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
+                            );
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(50),
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.notifications_rounded,
+                                size: 30,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                                child: Text(notifyOption),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    });
-                  },
-                  borderRadius: BorderRadius.circular(50),
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(children: [
-                      Icon(
-                        Icons.notifications_rounded,
-                        size: 30,
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(notifyOption),
-                      )
-                      
-                    ]),
-
-                  ),
-                ),
-              )
-            ],
-
-          )
-
-          : Container()
+                    ),
+                  ],
+                )
+              : Container(),
         ],
       ),
       actions: [
-        TextButton(onPressed: (){ Navigator.pop(context);}, child: Text("Cancelar")),
+        TextButton(onPressed: () { Navigator.pop(context); }, child: Text("Cancelar")),
         TextButton(
-          onPressed: (){
-            if(fullDay == false){
-              DateTime finalTaskTime = DateTime(widget.pickDate.year,widget.pickDate.month,widget.pickDate.day,taskTime!.hour,taskTime!.minute);
+          onPressed: () {
+            // Verificar se o campo descrição está vazio
+            if (widget.description.text.isEmpty) {
+              // Exibir um alerta se o campo descrição estiver vazio
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Erro'),
+                    content: Text('O campo descrição não pode estar vazio.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              return; // Impede que a função continue se a descrição estiver vazia
+            }
 
-              widget.onSetTime!(finalTaskTime, notifyDateTime,notifyOption);
+            // Verificar se a data de notificação é menor que a data atual
+            if (notifyDateTime != null && notifyDateTime!.isBefore(DateTime.now())) {
+              // Exibir um alerta se a data da notificação for menor que a data atual
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Erro'),
+                    content: Text('A data da notificação não pode ser no passado.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              return; // Impede que a função continue se a data da notificação for inválida
+            }
+
+            if (fullDay == false) {
+              DateTime finalTaskTime = DateTime(
+                widget.pickDate.year,
+                widget.pickDate.month,
+                widget.pickDate.day,
+                taskTime!.hour,
+                taskTime!.minute,
+              );
+
+              widget.onSetTime!(finalTaskTime, notifyDateTime, notifyOption);
             }
             widget.onConfirm();
             Navigator.pop(context);
-          }, 
-           child: Text("Salvar")
-        )
-
+          },
+          child: Text("Salvar"),
+        ),
       ],
     );
-    
   }
 }

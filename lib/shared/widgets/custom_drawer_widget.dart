@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_list/pages/drawer_pages/tutorial/tutorial_page.dart';
 import 'package:todo_list/services/dark_mode_service.dart';
 
 import '../../pages/drawer_pages/donation/donation_page.dart';
@@ -106,9 +107,14 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
               size: 30,
               color: Colors.purple.shade600,
             ),
-            title: Text("FAQ",
+            title: Text("Tutorial",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TutorialPage()),
+              );
+            },
           ),
           Divider(),
           Spacer(),

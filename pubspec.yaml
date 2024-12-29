@@ -88,7 +88,7 @@ flutter:
   assets:
     - packages/day_night_time_picker/assets/moon.png
     - packages/day_night_time_picker/assets/sun.png
-    - assets/eu.jpg
+    - assets/eu.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

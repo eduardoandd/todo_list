@@ -8,7 +8,6 @@ import 'package:todo_list/model/task_model.dart';
 import 'package:todo_list/notifications/notification_helper.dart';
 import 'package:todo_list/shared/widgets/alert_dialog_edit_widget.dart';
 import 'package:todo_list/shared/widgets/alert_dialog_widget.dart';
-import 'package:todo_list/shared/widgets/custom_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_list/shared/widgets/custom_appbar_widget.dart';
 import '../shared/widgets/custom_drawer_widget.dart';

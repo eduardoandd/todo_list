@@ -310,7 +310,6 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                           var doc = await db.collection("donations").add(donation.toJson());
                           socialNetworkController.text = '';
                           messageController.text = '';
-                          // valueController.text = '';
                         },
                       ),
                     ),
