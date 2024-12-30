@@ -42,8 +42,6 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
     var socialNetworkController = TextEditingController();
     var messageController = TextEditingController();
 
-
-
     return SingleChildScrollView(
       child: Card(
         color: isDarkMode ? Colors.grey.shade900 : Colors.white,
@@ -57,45 +55,50 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Center(
-                  child: Text(
-                    "Me ajuda a comprar café",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: isDarkMode ? Colors.white : Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top:8.0),
+                    child: Text(
+                      "Me ajuda a comprar café ☕",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: isDarkMode ? Colors.white : Colors.black,
+                      ),
                     ),
                   ),
-                  
                 ),
-                SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Center(
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: db.collection('donations').snapshots(),
-                    builder: (context,snapshot) {
-                      if (snapshot.hasError) {
-                        return Text(
-                          "Erro ao carregar doações",
-                          style: TextStyle(color: Color.fromARGB(255, 137, 135, 135)),
-                        );
-                      }
-                      int donatiounCount = snapshot.data?.docs.length ?? 3;
-                      
-                      return Text(
-                          "Doações: $donatiounCount",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 137, 135, 135)
-                          )
-                      );
-                    }
-                  ),
+                      stream: db.collection('donations').snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                            "Erro ao carregar doações",
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 137, 135, 135)),
+                          );
+                        }
+                        int donatiounCount = snapshot.data?.docs.length ?? 3;
+
+                        return Text("Doações: $donatiounCount",
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 137, 135, 135)));
+                      }),
                 ),
                 SizedBox(
                   height: 25,
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: isDarkMode ? Colors.grey.shade800 : Colors.purple.withOpacity(0.1),
-                    border: Border.all(color: isDarkMode ? Colors.white70 : Colors.purple, width: 0.7),
+                    color: isDarkMode
+                        ? Colors.grey.shade800
+                        : Colors.purple.withOpacity(0.1),
+                    border: Border.all(
+                        color: isDarkMode ? Colors.white70 : Colors.purple,
+                        width: 0.7),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -104,7 +107,9 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: Text(
                           "☕",
-                          style: TextStyle(fontSize: 50, color: isDarkMode ? Colors.white : Colors.black),
+                          style: TextStyle(
+                              fontSize: 50,
+                              color: isDarkMode ? Colors.white : Colors.black),
                         ),
                       ),
                       SizedBox(
@@ -127,7 +132,8 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                               height: 50,
                               decoration: BoxDecoration(
                                 color: bgColor1,
-                                border: Border.all(color: borderColor1, width: 1.3),
+                                border:
+                                    Border.all(color: borderColor1, width: 1.3),
                                 borderRadius: BorderRadius.circular(40),
                               ),
                               child: Center(
@@ -137,7 +143,9 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                                     fontSize: 20,
                                     color: bgColor1 == Colors.purple.shade400
                                         ? Colors.white
-                                        : (isDarkMode ? Colors.purple.shade200 : Colors.purple),
+                                        : (isDarkMode
+                                            ? Colors.purple.shade200
+                                            : Colors.purple),
                                   ),
                                 ),
                               ),
@@ -151,7 +159,8 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                               height: 50,
                               decoration: BoxDecoration(
                                 color: bgColor2,
-                                border: Border.all(color: borderColor2, width: 1.3),
+                                border:
+                                    Border.all(color: borderColor2, width: 1.3),
                                 borderRadius: BorderRadius.circular(40),
                               ),
                               child: Center(
@@ -161,7 +170,9 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                                     fontSize: 20,
                                     color: bgColor2 == Colors.purple.shade400
                                         ? Colors.white
-                                        : (isDarkMode ? Colors.purple.shade200 : Colors.purple),
+                                        : (isDarkMode
+                                            ? Colors.purple.shade200
+                                            : Colors.purple),
                                   ),
                                 ),
                               ),
@@ -177,7 +188,8 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                               height: 50,
                               decoration: BoxDecoration(
                                 color: bgColor3,
-                                border: Border.all(color: borderColor3, width: 1.3),
+                                border:
+                                    Border.all(color: borderColor3, width: 1.3),
                                 borderRadius: BorderRadius.circular(40),
                               ),
                               child: Center(
@@ -187,7 +199,9 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                                     fontSize: 20,
                                     color: bgColor3 == Colors.purple.shade400
                                         ? Colors.white
-                                        : (isDarkMode ? Colors.purple.shade200 : Colors.purple),
+                                        : (isDarkMode
+                                            ? Colors.purple.shade200
+                                            : Colors.purple),
                                   ),
                                 ),
                               ),
@@ -211,8 +225,12 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                             controller: valueController,
                             readOnly: false,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 25, color: isDarkMode ? Colors.white : Colors.black),
+                            style: TextStyle(
+                                fontSize: 25,
+                                color:
+                                    isDarkMode ? Colors.white : Colors.black),
                             decoration: InputDecoration(),
+                            keyboardType: TextInputType.number,
                           ),
                         ),
                       ),
@@ -229,10 +247,13 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                 TextField(
                   controller: socialNetworkController,
                   decoration: InputDecoration(
-                      fillColor: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
+                      fillColor: isDarkMode
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade200,
                       filled: true,
                       hintText: '@sua_rede_social',
-                      hintStyle: TextStyle(color: isDarkMode ? Colors.white70 : Colors.black54),
+                      hintStyle: TextStyle(
+                          color: isDarkMode ? Colors.white70 : Colors.black54),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                       )),
@@ -244,10 +265,13 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                   controller: messageController,
                   maxLines: 5,
                   decoration: InputDecoration(
-                      fillColor: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
+                      fillColor: isDarkMode
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade200,
                       filled: true,
                       hintText: 'Me mande uma mensagem..',
-                      hintStyle: TextStyle(color: isDarkMode ? Colors.white70 : Colors.black54),
+                      hintStyle: TextStyle(
+                          color: isDarkMode ? Colors.white70 : Colors.black54),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16))),
                 ),
@@ -258,7 +282,7 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                   child: SizedBox(
                     width: 220,
                     child: Padding(
-                      padding: const EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           primary: Colors.purple,
@@ -269,7 +293,6 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 12),
                         ),
-                        
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -294,16 +317,51 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                             ),
                           ],
                         ),
-                        onPressed: () async{
-                          var donation = DonationModel(
-                            quantity: valueDonation, 
-                            value: valueDonation * 5, 
-                            message: messageController.text,
-                            socialNetwork: socialNetworkController.text
-                          );
-                          var doc = await db.collection("donations").add(donation.toJson());
-                          socialNetworkController.text = '';
-                          messageController.text = '';
+                        onPressed: () async {
+                          if (valueDonation > 0) {
+                            try {
+                              var donation = DonationModel(
+                                quantity: valueDonation,
+                                value: valueDonation * 5,
+                                message: messageController.text,
+                                socialNetwork: socialNetworkController.text,
+                              );
+
+                              await db
+                                  .collection("donations")
+                                  .add(donation.toJson());
+
+                              // Limpa os campos
+                              socialNetworkController.text = '';
+                              messageController.text = '';
+
+                              // Exibe a mensagem de sucesso
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Obrigado pela sua doação!"),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            } catch (e) {
+                              // Exibe a mensagem de erro
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      "Ocorreu um erro ao processar sua doação."),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          } else {
+                            // Exibe a mensagem caso o valor da doação seja inválido
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    "Por favor, insira um valor válido para doar."),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          }
                         },
                       ),
                     ),
