@@ -68,42 +68,40 @@ class _DonationPageState extends State<DonationPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(12.0),
-                            child: Expanded(
-                              child: Scrollbar(
-                                interactive: true,
-                                child: Container(
-                                  // height: MediaQuery.of(context).size.width * .4,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    gradient: LinearGradient(
-                                      colors: isDarkMode
-                                          ? [
-                                              Color.fromARGB(255, 155, 39, 176),
-                                              Color.fromARGB(140, 155, 39, 176).withOpacity(0.5),
-                                            ]
-                                          : [
-                                              Color.fromARGB(53, 0, 0, 0)
-                                                  .withOpacity(0.1),
-                                              Color.fromARGB(76, 0, 0, 0)
-                                            ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
+                            child: Scrollbar(
+                              interactive: true,
+                              child: Container(
+                                // height: MediaQuery.of(context).size.width * .4,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  gradient: LinearGradient(
+                                    colors: isDarkMode
+                                        ? [
+                                            Color.fromARGB(255, 155, 39, 176),
+                                            Color.fromARGB(140, 155, 39, 176).withOpacity(0.5),
+                                          ]
+                                        : [
+                                            Color.fromARGB(53, 0, 0, 0)
+                                                .withOpacity(0.1),
+                                            Color.fromARGB(76, 0, 0, 0)
+                                          ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
-                                  padding: EdgeInsets.all(10),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        "Olá! Meu nome é Eduardo e sou o desenvolvedor deste aplicativo. Antes de mais nada, quero agradecer por estar aqui! Essa ideia de 'me ajuda a comprar um café' é só uma brincadeira mas, convenhamos, como qualquer desenvolvedor, eu realmente amo café e ele é quase um combustível para a criatividade haha.. Essa página é só uma forma divertida de abrir espaço para quem quiser apoiar o meu trabalho e me ajudar a continuar criando projetos como este. Se você puder contribuir, vai ser incrível! Mas, olha, se não puder, não tem problema. O que mais importa é o apoio que você já dá usando o aplicativo.Muito obrigado por acreditar no meu trabalho e por fazer parte dessa jornada. Vamos juntos construir algo ainda maior!",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.4,
-                                        ),
-                                        textAlign: TextAlign.center,
+                                ),
+                                padding: EdgeInsets.all(10),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      "Olá! Meu nome é Eduardo e sou o desenvolvedor deste aplicativo. Antes de mais nada, quero agradecer por estar aqui! Essa ideia de 'me ajuda a comprar um café' é só uma brincadeira mas, convenhamos, como qualquer desenvolvedor, eu realmente amo café e ele é quase um combustível para a criatividade haha.. Essa página é só uma forma divertida de abrir espaço para quem quiser apoiar o meu trabalho e me ajudar a continuar criando projetos como este. Se você puder contribuir, vai ser incrível! Mas, olha, se não puder, não tem problema. O que mais importa é o apoio que você já dá usando o aplicativo.Muito obrigado por acreditar no meu trabalho e por fazer parte dessa jornada. Vamos juntos construir algo ainda maior!",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.4,
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),

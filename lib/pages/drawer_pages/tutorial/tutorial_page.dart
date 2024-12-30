@@ -8,6 +8,7 @@ class TutorialPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Como usar o App"),
+      backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

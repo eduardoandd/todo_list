@@ -240,7 +240,9 @@ class _TodoPageState extends State<TodoPage> {
                                   var task = TaskModel.fromJson(
                                       (e.data() as Map<String, dynamic>));
                                   return Dismissible(
+                                    direction: DismissDirection.vertical,
                                     onDismissed: (DismissDirection
+
                                         dismissDirection) async {
                                       await db
                                           .collection('tasks')
