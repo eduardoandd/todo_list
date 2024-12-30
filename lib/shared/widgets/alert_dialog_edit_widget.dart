@@ -1,4 +1,5 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+
+
 
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
@@ -257,9 +258,11 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
         TextButton(onPressed: () { Navigator.pop(context); }, child: Text("Cancelar")),
         TextButton(
           onPressed: () {
-            // Verificar se o campo descrição está vazio
+            
+            
             if (widget.description.text.isEmpty) {
-              // Exibir um alerta se o campo descrição estiver vazio
+              
+              
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -277,12 +280,15 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
                   );
                 },
               );
-              return; // Impede que a função continue se a descrição estiver vazia
+              return; 
+              
             }
 
-            // Verificar se a data de notificação é menor que a data atual
+            
+            
             if (notifyDateTime != null && notifyDateTime!.isBefore(DateTime.now())) {
-              // Exibir um alerta se a data da notificação for menor que a data atual
+              
+              
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -300,7 +306,7 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
                   );
                 },
               );
-              return; // Impede que a função continue se a data da notificação for inválida
+              return; 
             }
 
             if (fullDay == false) {

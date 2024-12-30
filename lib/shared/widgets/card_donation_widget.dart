@@ -72,12 +72,6 @@ class _CardDonationWidgetState extends State<CardDonationWidget> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: db.collection('donations').snapshots(),
                     builder: (context,snapshot) {
-                      if(snapshot.connectionState == ConnectionState.waiting){
-                        return Text(
-                          "Carregando doações...",
-                          style: TextStyle(color: Color.fromARGB(255, 137, 135, 135)),
-                        );  
-                      }
                       if (snapshot.hasError) {
                         return Text(
                           "Erro ao carregar doações",
