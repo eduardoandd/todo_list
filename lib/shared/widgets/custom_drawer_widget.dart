@@ -27,47 +27,50 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.purple.shade600,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30)
-              )
-            ), child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text("Task's", style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Raleway',
-                  shadows: [
-                    Shadow(
-                      blurRadius: 5,
-                      color: Colors.black.withOpacity(0.3),
-                      offset: Offset(2, 2),
-                    )
-                  ],
-                  
-                ),),
-                Padding(
-                  padding: const EdgeInsets.only(bottom:8.0,top: 8.0),
-                  child: Text(
-                    "Gerencie suas tarefas com simplicidade",
-                    style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.white70,
-                    fontStyle: FontStyle.italic,
-                    ),
-                  ),
+          Container(
+            width: double.infinity, 
+            child: DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.purple.shade600,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 )
-              ],
-            ),
+              ), child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text("Task's", style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: 'Raleway',
+                    shadows: [
+                      Shadow(
+                        blurRadius: 5,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: Offset(2, 2),
+                      )
+                    ],
+                    
+                  ),),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom:8.0,top: 8.0),
+                    child: Text(
+                      "Gerencie suas tarefas com simplicidade",
+                      style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white70,
+                      fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  )
+                ],
+              ),
 
-            
-            
+              
+              
+            ),
           ),
           ListTile(
             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),

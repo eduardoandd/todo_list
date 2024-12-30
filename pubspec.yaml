@@ -52,6 +52,7 @@ dependencies:
   flutter_swiper_plus: ^2.0.4
   profile_photo: ^1.0.3
   awesome_snackbar_content: ^0.1.2
+  flutter_launcher_icons: ^0.11.0
 
 
 
@@ -63,6 +64,20 @@ dev_dependencies:
     sdk: flutter
   hive_generator: ^2.0.1
   build_runner: ^2.2.1
+
+flutter_native_splash:
+  color: "#F9D87B"
+  image: "assets/app/logo.png"
+  android: true
+  ios: true
+
+flutter_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/app/logo.png"
+  remove_alpha_ios: true
+
+
 
   
 
