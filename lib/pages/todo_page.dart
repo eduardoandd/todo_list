@@ -185,7 +185,9 @@ class _TodoPageState extends State<TodoPage> {
           }
         },
         children: [
-          Center(child: Text("Dia anterior")),
+          Center(child: Text("Dia anterior",style: TextStyle(
+            color: Theme.of(context).brightness ==Brightness.dark? Color.fromARGB(255, 19, 18, 18) :  Colors.white
+          ))),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Column(
@@ -416,7 +418,9 @@ class _TodoPageState extends State<TodoPage> {
               ],
             ),
           ),
-          Center(child: Text("Próximo dia")),
+          Center(child: Text("Próximo dia", style: TextStyle(
+            color: Theme.of(context).brightness ==Brightness.dark? Color.fromARGB(255, 19, 18, 18) :  Colors.white
+          ),)),
         ],
       ),
     );

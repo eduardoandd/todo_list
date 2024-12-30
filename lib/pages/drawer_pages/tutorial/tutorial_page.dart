@@ -6,6 +6,7 @@ class TutorialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness ==Brightness.dark? Color.fromARGB(255, 19, 18, 18) :  Colors.white,
       appBar: AppBar(
         title: Text("Como usar o App"),
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -31,12 +32,12 @@ class TutorialPage extends StatelessWidget {
             
             _buildSectionTitle("2. Como editar uma tarefa"),
             _buildStepText(
-                "Clique em uma tarefa existente para abrir a tela de edição e fazer alterações."),
+                "Clique e segure em uma tarefa existente para abrir a tela de edição e fazer alterações."),
             SizedBox(height: 20),
             
             _buildSectionTitle("3. Como excluir uma tarefa"),
             _buildStepText(
-                "Deslize para a esquerda na tarefa ou toque no ícone de lixeira para excluir."),
+                "Deslize verticalmente para cima ou para baixo em uma tarefa."),
             SizedBox(height: 20),
           ],
         ),
