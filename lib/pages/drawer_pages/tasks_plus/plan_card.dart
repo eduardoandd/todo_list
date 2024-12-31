@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlanCard extends StatelessWidget {
   final String title;
@@ -71,7 +72,7 @@ class PlanCard extends StatelessWidget {
                   TextSpan(children: [
                     TextSpan(
                       text:
-                          "Acesso completo e vitalício ao conteúdo, sem anúncios. Inclui",
+                          "Acesso completo e vitalício ao conteúdo, sem anúncios.",
                       style: TextStyle(
                           fontSize: 14,
                           color: Colors.white.withOpacity(0.8),
@@ -79,7 +80,7 @@ class PlanCard extends StatelessWidget {
                     ),
                     if (isPermanent) ...[
                       TextSpan(
-                          text: " WhatsApp",
+                          text: " Inclui WhatsApp",
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.white,
@@ -123,7 +124,32 @@ class PlanCard extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40.0),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
+                    if(isPermanent){
+                      final wpp ="+5511993582674";
+                      final message = Uri.encodeComponent(
+                        "Olá! Acabei de adquirir o plano."
+                      );
+                      final wppUrl= "https://wa.me/$wpp?text=$message";
+
+                      if (await canLaunchUrl(Uri.parse(wppUrl))){
+                        await launchUrl(Uri.parse(wppUrl),
+                          mode: LaunchMode.externalApplication
+                        
+                        );
+                      }
+                      else{
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            "Não foi possível abrir o WhatsApp. Verifique sua instalação."),
+                        ));
+                      }
+                    }
+                    else{
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Plano adquirido!"),
+                      ));
+                    }
                     
                   },
                   style: ElevatedButton.styleFrom(
