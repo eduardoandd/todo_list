@@ -70,8 +70,9 @@ class _DonationPageState extends State<DonationPage> {
                             padding: const EdgeInsets.all(12.0),
                             child: Scrollbar(
                               interactive: true,
+                              isAlwaysShown: true,
                               child: Container(
-                                // height: MediaQuery.of(context).size.width * .4,
+                                height: MediaQuery.of(context).size.height * .5,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
                                   gradient: LinearGradient(
