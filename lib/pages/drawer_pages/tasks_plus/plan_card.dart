@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -28,6 +30,9 @@ class PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Uri phoneNumber = Uri.parse('tel:+5511993582674');
+    final Uri wpp = Uri.parse('https://wa.me/5511993582674');
+
     return Center(
       child: Container(
         decoration: BoxDecoration(
@@ -126,24 +131,15 @@ class PlanCard extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () async{
                     if(isPermanent){
-                      final wpp ="+5511993582674";
-                      final message = Uri.encodeComponent(
-                        "Olá! Acabei de adquirir o plano."
-                      );
-                      final wppUrl= "https://wa.me/$wpp?text=$message";
-
-                      if (await canLaunchUrl(Uri.parse(wppUrl))){
-                        await launchUrl(Uri.parse(wppUrl),
-                          mode: LaunchMode.externalApplication
-                        
-                        );
+                      String message = 'Olá, acabei de adquirir o plano permanente.';
+                      if(Platform.isAndroid){
+                        String url = 'https://api.whatsapp.com/send?phone=+5511993582674&text=$message';
+                        await launchUrl(Uri.parse(url),mode: LaunchMode.externalApplication);
                       }
                       else{
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                            "Não foi possível abrir o WhatsApp. Verifique sua instalação."),
-                        ));
+
                       }
+
                     }
                     else{
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

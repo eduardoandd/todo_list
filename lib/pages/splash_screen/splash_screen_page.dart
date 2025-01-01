@@ -23,15 +23,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    initializeApp();
+    loadHome();
   }
 
-  Future<void> initializeApp()async{
-    await Future.delayed(const Duration(seconds: 2));
-    loadUser();
-  }
-
-  loadUser(){
+  loadHome(){
     Future.delayed(Duration(seconds: 2), () async {
       final prefs = await SharedPreferences.getInstance();
       userId= prefs.getString('user_id');
@@ -45,26 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => TodoPage()));
     });
   }
-
-  void navigateHome(){
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => TodoPage()),);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(child: Column(
-        children: [
-          Image.asset(
-            'assets/app/logo.png', 
-            width: 150,
-            height: 150,
-          ),
-          const SizedBox(height: 20),
-          const CircularProgressIndicator(),
-        ],
-      ),),
-    );
+    return Container();
   }
 }
