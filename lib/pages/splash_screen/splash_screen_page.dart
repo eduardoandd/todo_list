@@ -18,7 +18,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   String? userId = '';
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -26,22 +25,38 @@ class _SplashScreenState extends State<SplashScreen> {
     loadHome();
   }
 
-  loadHome(){
-    Future.delayed(Duration(seconds: 2), () async {
+  loadHome() {
+    Future.delayed(Duration(seconds: 1), () async {
       final prefs = await SharedPreferences.getInstance();
-      userId= prefs.getString('user_id');
+      userId = prefs.getString('user_id');
 
-      if (userId == null){
+      if (userId == null) {
         var uuiD = Uuid();
         userId = uuiD.v4();
         prefs.setString('user_id', userId.toString());
       }
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => TodoPage()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => TodoPage()));
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+          child: ClipRRect(
+        borderRadius: BorderRadius.circular(
+            80), // Defina o valor do raio conforme necessário
+        child: Image.asset(
+          'assets/app/logo.png',
+          width: 150,
+          height: 150,
+          fit: BoxFit
+              .cover, // Ajuste o "fit" se necessário para controlar como a imagem se ajusta ao espaço
+        ),
+      )),
+    );
   }
 }
