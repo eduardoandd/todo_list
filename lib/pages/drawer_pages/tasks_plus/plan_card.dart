@@ -85,7 +85,7 @@ class PlanCard extends StatelessWidget {
                     ),
                     if (isPermanent) ...[
                       TextSpan(
-                          text: " Inclui WhatsApp",
+                          text: " Inclui o WhatsApp",
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.white,

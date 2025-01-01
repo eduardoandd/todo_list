@@ -179,7 +179,11 @@ class _TodoPageState extends State<TodoPage> {
             } else if (index == 2) {
               updateDate(true);
             }
-            _pageController.jumpToPage(1);
+            _pageController.animateToPage(
+              1,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInCubic ,
+            );
           }
         },
         children: [
@@ -191,11 +195,11 @@ class _TodoPageState extends State<TodoPage> {
                           : Colors.white))),
           Container(
             margin: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width *
-                        0.03, // 3% da largura
-                    vertical: MediaQuery.of(context).size.height *
-                        0.01, // 1% da altura
-                  ),
+              horizontal:
+                  MediaQuery.of(context).size.width * 0.03, // 3% da largura
+              vertical:
+                  MediaQuery.of(context).size.height * 0.01, // 1% da altura
+            ),
             child: Column(
               children: [
                 Container(
@@ -260,7 +264,10 @@ class _TodoPageState extends State<TodoPage> {
                                           .doc(e.id)
                                           .delete();
                                     },
+                                    
                                     key: Key(e.id),
+                                    movementDuration: Duration(milliseconds: 200),
+                                    resizeDuration: Duration(milliseconds: 200),
                                     child: Container(
                                       margin: EdgeInsets.all(8),
                                       decoration: BoxDecoration(
@@ -381,7 +388,7 @@ class _TodoPageState extends State<TodoPage> {
                                                                   null) {
                                                                 NotificationHelper
                                                                     .scheduledNotification(
-                                                                  'Hoje às ${taskEdit.taskTime?.hour}${taskEdit.taskTime?.minute != null ? ":" + taskEdit.taskTime!.minute.toString().padLeft(2, '0') : ''}',
+                                                                  'Hoje ${taskEdit.taskTime?.hour}${taskEdit.taskTime?.minute != null ? ":" + taskEdit.taskTime!.minute.toString().padLeft(2, '0') : ''}',
                                                                   '${taskEdit.description}',
                                                                   notifyTimeEdit!,
                                                                 );
