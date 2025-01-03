@@ -317,8 +317,8 @@ class _AlertDialogEditWidgetState extends State<AlertDialogEditWidget> {
                 taskTime!.hour,
                 taskTime!.minute,
               );
-
               widget.onSetTime!(finalTaskTime, notifyDateTime, notifyOption);
+
             }
             widget.onConfirm();
             Navigator.pop(context);

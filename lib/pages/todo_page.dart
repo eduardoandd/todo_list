@@ -89,7 +89,7 @@ class _TodoPageState extends State<TodoPage> {
 
       if (notifyTime != null) {
         NotificationHelper.scheduledNotification(
-          'Hoje às ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
+          'Hoje ${task.taskTime?.hour}${task.taskTime?.minute != null ? ":" + task.taskTime!.minute.toString().padLeft(2, '0') : ''}',
           '${task.description}',
           notifyTime!,
         );
@@ -426,6 +426,7 @@ class _TodoPageState extends State<TodoPage> {
                                                                   .update(taskEdit
                                                                       .toJson());
                                                             },
+                                                            onSetTime: onSetTimeEdit,
                                                             optionNotify: task
                                                                 .notifyOption,
                                                           );
