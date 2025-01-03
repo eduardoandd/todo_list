@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.eduardo.todo_list.todo_list">
+    package="com.eduardo.todo_list.todo_list_">
     <queries>
      <intent>
       <action android:name="android.intent.action.VIEW"/>
